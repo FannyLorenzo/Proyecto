@@ -9,4 +9,7 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="siguiente">Siguiente</string>
+    <string name="bienvenido">Bienvenido</string>
+    <string name="la_mejor_aplicaci_n_de_entrenamiento">La mejor aplicación de entrenamiento!</string>
 </resources>

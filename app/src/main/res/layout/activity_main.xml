@@ -6,51 +6,47 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/img"
+        android:contentDescription="presentacion">
+
+    </ImageView>
+
+    <TextView
+        android:id="@+id/txt_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="549dp"
+        android:text="@string/bienvenido"
+        android:textColor="#FFFFFF"
+        android:textSize="32sp"
+        android:textStyle="bold" />
+    <TextView
+        android:id="@+id/txt_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="590dp"
+        android:text="@string/la_mejor_aplicaci_n_de_entrenamiento"
+        android:textColor="#FFFFFF"
+        android:textSize="17sp"
+         />
 
     <Button
         android:id="@+id/login"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginTop="250dp"
-        android:background="@color/purple_200"
-        android:enabled="false"
-        android:text="@string/action_sign_in" />
-
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/prompt_password"
-        android:layout_marginTop="180dp"
-        android:imeActionLabel="@string/action_sign_in_short"
-        android:imeOptions="actionDone"
-        android:inputType="textPassword"
-        android:selectAllOnFocus="true"
-         />
-
-    <EditText
-        android:id="@+id/username"
-        android:layout_marginTop="120dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/prompt_email"
-        android:inputType="textEmailAddress"
-        android:selectAllOnFocus="true"
-      />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_facebook"
-        android:layout_centerInParent="true"
-        ></androidx.appcompat.widget.AppCompatImageView>
-    <androidx.appcompat.widget.AppCompatImageView
-        android:layout_marginTop="400dp"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_gmail"
         android:layout_centerHorizontal="true"
-        ></androidx.appcompat.widget.AppCompatImageView>
+        android:layout_gravity="start"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="659dp"
+        android:background="@drawable/bg"
+        android:text="@string/siguiente" />
+
 
 </RelativeLayout>
