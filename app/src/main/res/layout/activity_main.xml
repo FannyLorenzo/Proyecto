@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="549dp"
+        android:layout_marginTop="530dp"
         android:text="@string/bienvenido"
         android:textColor="#FFFFFF"
         android:textSize="32sp"
@@ -31,14 +31,14 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="590dp"
+        android:layout_marginTop="580dp"
         android:text="@string/la_mejor_aplicaci_n_de_entrenamiento"
         android:textColor="#FFFFFF"
         android:textSize="17sp"
          />
 
     <Button
-        android:id="@+id/login"
+        android:id="@+id/btn_toPermissions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
