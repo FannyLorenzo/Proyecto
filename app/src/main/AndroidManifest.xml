@@ -2,14 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.proyecto">
-    <!-- PERMISOS DE ALMACENAMIENTO INTERNO -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- PERMISOS DE UBICACION -->
-    <!-- UBICACION EN PRIMER PLANO -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- UBICACION EN SEGUNNDO PLANO -->
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> <!-- PERMISOS DE CAMARA -->
-    <uses-permission android:name="android.permission.CAMERA" />
-
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -18,12 +10,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Proyecto">
-        <activity android:name=".view.MenuPrincipal"></activity>
+        <activity android:name=".view.AudioActivity"></activity>
+        <activity android:name=".view.EntrenamientoActivity" />
+        <activity android:name=".view.MenuPrincipal" />
         <activity android:name=".view.Prueba" />
         <activity android:name=".view.RecorridoActivity" />
-
-        <activity
-            android:name=".MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,6 +27,16 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
     </application>
+    <!-- PERMISOS-->
+    <uses-permission android:name="android.permission.ACCESS_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- UBICACION ESPECÍFICA -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> <!-- UBICACION EN SEGUNNDO PLANO -->
+    <uses-permission android:name="android.hardware.location.gps" />
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- PERMISOS DE CAMARA -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

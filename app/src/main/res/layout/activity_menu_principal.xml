@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".view.MenuPrincipal">
-
-
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context=".view.MenuPrincipal">
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="match_parent"
@@ -14,8 +12,10 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="-73dp"
         app:srcCompat="@drawable/imagen4"
+        android:contextClickable="true"
         tools:layout_editor_absoluteX="-27dp"
         tools:layout_editor_absoluteY="459dp" />
+
 
     <ImageView
         android:id="@+id/imageView4"
@@ -47,7 +47,9 @@
         android:layout_width="401dp"
         android:layout_height="343dp"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="4dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="344dp"
         app:srcCompat="@drawable/imagen1"
         tools:layout_editor_absoluteX="-21dp"
         tools:layout_editor_absoluteY="-15dp" />
@@ -57,7 +59,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
        >
-
     </LinearLayout>
 
     <ImageView
@@ -65,7 +66,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="590dp"
+        android:layout_marginBottom="578dp"
         app:srcCompat="@drawable/bg_superior"
         tools:layout_editor_absoluteX="-93dp"
         tools:layout_editor_absoluteY="-91dp" />
@@ -86,15 +87,15 @@
 
     <Button
         android:id="@+id/btn_toLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="38dp"
+        android:layout_width="42dp"
+        android:layout_height="36dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="23dp"
-        android:layout_marginBottom="632dp"
-        android:background="@drawable/bg"
-        android:text="Sign in"
-        android:textColor="@color/white" />
+        android:layout_marginEnd="26dp"
+        android:layout_marginBottom="644dp"
+        android:background="@drawable/ic_perfil"
+        android:backgroundTint="@color/purple_App"
+         />
 
     <ImageButton
         android:id="@+id/imgbtn_atras"
@@ -106,5 +107,105 @@
         android:layout_marginBottom="680dp"
         android:background="@color/white"
         app:srcCompat="@drawable/ic_regresar" />
+
+    <TextView
+        android:id="@+id/txt_entrenamiento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="199dp"
+        android:layout_marginBottom="502dp"
+        android:text="@string/entrenamiento"
+        android:textColor="@color/white"
+        android:textSize="26dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView31"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="224dp"
+        android:layout_marginBottom="478dp"
+        android:text="Inicia tu propia carrera"
+        android:textColor="@color/white"
+        android:textSize="14dp" />
+
+    <TextView
+        android:id="@+id/txt_programar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="38dp"
+        android:layout_marginBottom="329dp"
+        android:text="@string/programar"
+        android:textColor="@color/white"
+        android:textSize="26dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView41"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="35dp"
+        android:layout_marginBottom="305dp"
+        android:text="Programa tu carrera"
+        android:textColor="@color/white"
+        android:textSize="14dp" />
+
+    <TextView
+        android:id="@+id/txt_ranking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="248dp"
+        android:layout_marginBottom="192dp"
+        android:text="@string/ranking"
+        android:textColor="@color/white"
+        android:textSize="26dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView51"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="188dp"
+        android:layout_marginBottom="171dp"
+        android:text="Mira tu posicionamiento"
+        android:textColor="@color/white"
+        android:textSize="14dp" />
+
+    <TextView
+        android:id="@+id/txt_musica"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="59dp"
+        android:layout_marginBottom="72dp"
+        android:text="@string/musica"
+        android:textColor="@color/white"
+        android:textSize="26dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView61"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="42dp"
+        android:layout_marginBottom="53dp"
+        android:text="Disfruta corriendo"
+        android:textColor="@color/white"
+        android:textSize="14dp" />
 
 </RelativeLayout>

@@ -14,4 +14,16 @@
     <string name="la_mejor_aplicaci_n_de_entrenamiento">La mejor aplicación de entrenamiento!</string>
     <string name="actividades">Actividades</string>
     <string name="men_principal">Menú principal</string>
+    <string name="entrenamiento">Entrenamiento</string>
+    <string name="programar">Programar</string>
+    <string name="ranking">Ranking</string>
+    <string name="musica">Musica</string>
+    <string name="ubicaci_n_actual">Ubicación actual</string>
+    <string name="direcci_n">Dirección</string>
+    <string name="latitud"><![CDATA[<< Latitud >>]]></string>
+    <string name="longitud"><![CDATA[<< Longitud >>]]></string>
+    <string name="latitud_">Latitud:</string>
+    <string name="longitud_">Longitud:</string>
+    <string name="gps">GPS</string>
+    <string name="direccion"><![CDATA[<<direccion>>]]></string>
 </resources>

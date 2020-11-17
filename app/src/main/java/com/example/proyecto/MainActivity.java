@@ -58,7 +58,7 @@ if(permisoStorageR != PackageManager.PERMISSION_GRANTED || permisoStorageW != Pa
 
     private void solicitarPermisosUbicacion(){
         int permisoUbicacion = ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION);
-//int permisoUbicacionB = ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+        int permisoUbicacionB = ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION);
 
 
 // ubicacion
