@@ -13,12 +13,14 @@ public interface IUsuario {
         void showRegisterSuccess(String result, Usuario usuario);
         void showRegisterError(String result);
         void loginUser(String email, String password);
+        void getUserAuth();
         void signOutUser();
     }
 
     interface model {
         void registerUser(Usuario usuario);
         void loginUser(String email, String password);
+        void getUserAuth();
         void signOutUser();
     }
 }

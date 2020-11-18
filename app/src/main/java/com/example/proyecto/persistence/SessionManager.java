@@ -17,9 +17,8 @@ public class SessionManager {
     int PRIVATE_MODE = 0; // Privacidad en las preferencias
 
     //claves
-    private static final String PREF_NAME = "Pixelpro"; // Sharedpref nombre del archivo
+    private static final String PREF_NAME = "Usuario"; // Sharedpref nombre del archivo
     private static final String IS_LOGGED = "Identificado"; // Claves
-    public static final String KEY_NAME = "Nombre"; // Nombre de usuario en final para poder acceder
     public static final String KEY_EMAIL = "Email"; // Email también en final para que sea accedida
 
     // Constructor
@@ -29,18 +28,16 @@ public class SessionManager {
         editor = pref.edit();
     }
 
-    public void createLoginSession(String name, String email){
+    public void createLoginSession(String email){
         // claves y valores
         editor.putBoolean(IS_LOGGED, true);
-        editor.putString(KEY_NAME, name);
         editor.putString(KEY_EMAIL, email);
         editor.commit();
     }
 
     public HashMap<String, String> getUserPref() {
         HashMap<String, String> user = new HashMap<>();
-        // null es el default si no hay KEY_NAME
-        user.put(KEY_NAME, pref.getString(KEY_NAME, null));
+        // null es el default si no hay KEY_EMAIL
         user.put(KEY_EMAIL, pref.getString(KEY_EMAIL, null));
         return user;
     }

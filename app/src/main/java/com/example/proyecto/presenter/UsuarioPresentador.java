@@ -37,6 +37,11 @@ public class UsuarioPresentador implements IUsuario.presenter {
     }
 
     @Override
+    public void getUserAuth() {
+        model.getUserAuth();
+    }
+
+    @Override
     public void signOutUser() {
         model.signOutUser();
     }

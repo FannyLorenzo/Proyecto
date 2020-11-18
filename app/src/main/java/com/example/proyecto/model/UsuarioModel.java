@@ -10,6 +10,7 @@ import com.example.proyecto.persistence.SessionManager;
 import com.example.proyecto.view.DatabaseOpenHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class UsuarioModel implements IUsuario.model {
 
@@ -23,7 +24,7 @@ public class UsuarioModel implements IUsuario.model {
         this.presenter = presenter;
         this._context = (Context) view;
         database = new DatabaseOpenHelper(this._context).getWritableDatabase();
-        session = new SessionManager(this._context);
+        session = new SessionManager(this._context); // Para el share preferences
     }
 
     private ArrayList<Usuario> getUsuarios () {
@@ -86,7 +87,7 @@ public class UsuarioModel implements IUsuario.model {
         for (Usuario usuario : lista) {
             if (usuario.getEmail().equals(email)) {
                 if (usuario.getContraseña().equals(password)) {
-                    session.createLoginSession("javier", "javier@gmail.com");
+                    session.createLoginSession(usuario.getEmail()); // Se guarda el email en share preferences
                     presenter.showRegisterSuccess("", usuario);
                     return;
                 } else {
@@ -96,6 +97,20 @@ public class UsuarioModel implements IUsuario.model {
             }
         }
         presenter.showRegisterError("Usuario no existente.");
+    }
+
+    @Override
+    public void getUserAuth() {
+        ArrayList<Usuario> lista = getUsuarios();
+        HashMap<String, String> user = session.getUserPref();
+
+        for (Usuario usuario : lista) {
+            if (usuario.getEmail().equals(user.get(SessionManager.KEY_EMAIL))) {
+                presenter.showRegisterSuccess("", usuario);
+                return;
+            }
+        }
+        presenter.showRegisterError("Error al cargar el usuario.");
     }
 
     @Override
