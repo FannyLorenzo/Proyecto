@@ -26,4 +26,6 @@
     <string name="longitud_">Longitud:</string>
     <string name="gps">GPS</string>
     <string name="direccion"><![CDATA[<<direccion>>]]></string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

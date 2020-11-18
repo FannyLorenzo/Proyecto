@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.proyecto.R;
 
@@ -25,6 +26,10 @@ public class Estadisticas_Fragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    int seg=0,minut=0,hour=0;
+    View view;
+    TextView segs,minutos,hours;
+
 
     public Estadisticas_Fragment() {
         // Required empty public constructor
@@ -54,6 +59,9 @@ public class Estadisticas_Fragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+            seg = getArguments().getInt("segundo1",0);
+            minut = getArguments().getInt("minuto1",0);
+            hour = getArguments().getInt("hora1",0);
         }
     }
 
@@ -61,6 +69,20 @@ public class Estadisticas_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_estadisticas_, container, false);
+
+        view = inflater.inflate(R.layout.fragment_estadisticas_,container,false);
+        minutos = (TextView) view.findViewById(R.id.textView4);
+        minutos.setText(String.valueOf(minut));
+        return view;
+    }
+
+    public int getSeg(){
+        return seg;
+    }
+    public int getMinut(){
+        return minut;
+    }
+    public int getHour(){
+        return hour;
     }
 }
