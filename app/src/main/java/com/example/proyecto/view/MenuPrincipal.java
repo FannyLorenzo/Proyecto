@@ -8,11 +8,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.proyecto.MainActivity;
 import com.example.proyecto.R;
+import com.example.proyecto.persistence.SessionManager;
 
 public class MenuPrincipal extends AppCompatActivity {
+
+    // Shared preferences para saber persistir la sesión
+    SessionManager session;
+
     // variables de entorno
     private Button btn_toLogin;
     private ImageButton imgbtn_atras;
@@ -27,12 +33,14 @@ public class MenuPrincipal extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_principal);
 
+        session = new SessionManager(this);
+
         // boton - Iniciar sesión
         btn_toLogin = findViewById(R.id.btn_toLogin);
         btn_toLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MenuPrincipal.this, Prueba.class)); // REEMPLAZAR POR EL ACTIVITY DE LOGIN FINAL
+                session.loginStatus();
             }
         });
 
