@@ -28,4 +28,8 @@
     <string name="direccion"><![CDATA[<<direccion>>]]></string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="mira_tu_posicionamiento">Mira tu posicionamiento</string>
+    <string name="disfruta_corriendo">Disfruta corriendo</string>
+    <string name="programa_tu_carrera">Programa tu carrera</string>
+    <string name="inicia_tu_propia_carrera">Inicia tu propia carrera</string>
 </resources>

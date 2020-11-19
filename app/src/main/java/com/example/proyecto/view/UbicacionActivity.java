@@ -40,11 +40,17 @@ public class UbicacionActivity extends AppCompatActivity implements IUbicacion.v
             public void onClick(View v) {
                 LocationManager locationManager = (LocationManager) UbicacionActivity.this.getSystemService(Context.LOCATION_SERVICE);
 
-                LocationListener locationChanged = new LocationListener() {
+                LocationListener locationListener = new LocationListener() {
+                    @SuppressLint("SetTextI18n") // weno
                     public void onLocationChanged(Location location) {
                         txt_latitud.setText("" + location.getLatitude());
                         txt_longitud.setText("" + location.getLongitude());
-                        txt_direccion.setText("" + location.getProvider());
+                        txt_direccion.setText("speed: " + location.getSpeed() + "time: " + "/n" +
+                                location.getTime() + "realtime: " +  "/n" +
+                                location.getElapsedRealtimeNanos());
+
+                        // Aqui guardar objeto UbicacionModel con SQLite
+
                     }
 
                     @Override
@@ -62,27 +68,14 @@ public class UbicacionActivity extends AppCompatActivity implements IUbicacion.v
 
                     }
                 };
-
-              //  locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0, locationListener);
+                int permissionCheck = ContextCompat.checkSelfPermission(UbicacionActivity.this, Manifest.permission.ACCESS_FINE_LOCATION);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 
             }
         });
 
         int permissionCheck = ContextCompat.checkSelfPermission(UbicacionActivity.this, Manifest.permission.ACCESS_FINE_LOCATION);
 
-        if (permissionCheck == PackageManager.PERMISSION_DENIED) {
-            //if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION))
-        }else{
-            //    this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}
-
-            }
-
-            // ME QUEDE AQUIII
-            /// https://www.youtube.com/watch?v=XOF8aFU03ew
-            // otro
-
-
-        }
-
 
     }
+}

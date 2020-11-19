@@ -118,7 +118,7 @@
         android:layout_marginBottom="502dp"
         android:text="@string/entrenamiento"
         android:textColor="@color/white"
-        android:textSize="26dp"
+        android:textSize="26sp"
         android:textStyle="bold" />
 
     <TextView
@@ -129,9 +129,9 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="224dp"
         android:layout_marginBottom="478dp"
-        android:text="Inicia tu propia carrera"
+        android:text="@string/inicia_tu_propia_carrera"
         android:textColor="@color/white"
-        android:textSize="14dp" />
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/txt_programar"
@@ -143,7 +143,7 @@
         android:layout_marginBottom="329dp"
         android:text="@string/programar"
         android:textColor="@color/white"
-        android:textSize="26dp"
+        android:textSize="26sp"
         android:textStyle="bold" />
 
     <TextView
@@ -154,9 +154,9 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="35dp"
         android:layout_marginBottom="305dp"
-        android:text="Programa tu carrera"
+        android:text="@string/programa_tu_carrera"
         android:textColor="@color/white"
-        android:textSize="14dp" />
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/txt_ranking"
@@ -164,11 +164,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="248dp"
-        android:layout_marginBottom="192dp"
-        android:text="@string/ranking"
+        android:layout_marginEnd="164dp"
+        android:layout_marginBottom="197dp"
+        android:text="@string/ubicaci_n_actual"
         android:textColor="@color/white"
-        android:textSize="26dp"
+        android:textSize="26sp"
         android:textStyle="bold" />
 
     <TextView
@@ -179,9 +179,9 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="188dp"
         android:layout_marginBottom="171dp"
-        android:text="Mira tu posicionamiento"
+        android:text="@string/mira_tu_posicionamiento"
         android:textColor="@color/white"
-        android:textSize="14dp" />
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/txt_musica"
@@ -193,7 +193,7 @@
         android:layout_marginBottom="72dp"
         android:text="@string/musica"
         android:textColor="@color/white"
-        android:textSize="26dp"
+        android:textSize="26sp"
         android:textStyle="bold" />
 
     <TextView
@@ -204,8 +204,8 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="42dp"
         android:layout_marginBottom="53dp"
-        android:text="Disfruta corriendo"
+        android:text="@string/disfruta_corriendo"
         android:textColor="@color/white"
-        android:textSize="14dp" />
+        android:textSize="14sp" />
 
 </RelativeLayout>

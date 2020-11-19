@@ -21,13 +21,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Proyecto">
-        <activity android:name=".view.UsuarioActivity"></activity>
+        <activity android:name=".view.UsuarioActivity"/>
         <activity android:name=".view.RegistroActivity" />
         <activity android:name=".view.LoginActivity" />
         <activity android:name=".view.AudioActivity" />
         <activity android:name=".view.EntrenamientoActivity" />
         <activity android:name=".view.MenuPrincipal" />
         <activity android:name=".view.Prueba" />
+        <activity android:name=".view.UbicacionActivity" />
         <activity android:name=".view.RecorridoActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

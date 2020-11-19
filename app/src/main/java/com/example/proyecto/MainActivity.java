@@ -18,9 +18,9 @@ import com.example.proyecto.view.MenuPrincipal;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final int REQUEST_PERMISSION_STORE = 111;
-    private final int REQUEST_PERMISSION_CAMERA = 111;
-    private final int REQUEST_PERMISSION_UBICACION = 111;
+    public final int REQUEST_PERMISSION_STORE = 111;
+    public final int REQUEST_PERMISSION_CAMERA = 111;
+    public final int REQUEST_PERMISSION_UBICACION = 111;
 private Button btn_next;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
