@@ -52,4 +52,13 @@
         android:background="@color/white"
         app:srcCompat="@drawable/ic_regresar" />
 
+    <ListView
+        android:id="@+id/music"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="120dp"
+        tools:layout_editor_absoluteX="105dp"
+        tools:layout_editor_absoluteY="326dp" />
+
+
 </RelativeLayout>
