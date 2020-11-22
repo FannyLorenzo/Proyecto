@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.proyecto.interfaces.IUsuario;
 import com.example.proyecto.persistence.SessionManager;
-import com.example.proyecto.view.DatabaseOpenHelper;
+import com.example.proyecto.persistence.DatabaseOpenHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;

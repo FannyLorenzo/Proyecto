@@ -1,4 +1,4 @@
-package com.example.proyecto.view;
+package com.example.proyecto.persistence;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
