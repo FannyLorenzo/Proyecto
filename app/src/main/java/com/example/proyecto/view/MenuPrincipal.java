@@ -18,7 +18,6 @@ public class MenuPrincipal extends AppCompatActivity {
 
     // Shared preferences para saber persistir la sesión
     SessionManager session;
-
     // variables de entorno
     private Button btn_toLogin;
     private ImageButton imgbtn_atras;
@@ -26,8 +25,6 @@ public class MenuPrincipal extends AppCompatActivity {
     private TextView txt_musica;
     private TextView txt_programar;
     private TextView txt_ranking;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
