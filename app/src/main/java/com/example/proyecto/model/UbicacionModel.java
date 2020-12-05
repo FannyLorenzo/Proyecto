@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.proyecto.interfaces.IPermisos;
 import com.example.proyecto.interfaces.IUbicacion;
-import com.example.proyecto.view.DatabaseOpenHelper;
+import com.example.proyecto.persistence.DatabaseOpenHelper;
 
 import java.text.ParseException;
 import java.util.ArrayList;

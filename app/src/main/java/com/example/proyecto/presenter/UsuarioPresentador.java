@@ -2,6 +2,7 @@ package com.example.proyecto.presenter;
 import com.example.proyecto.interfaces.IUsuario;
 import com.example.proyecto.model.Usuario;
 import com.example.proyecto.model.UsuarioModel;
+
 public class UsuarioPresentador implements IUsuario.presenter {
     private IUsuario.view view;
     private IUsuario.model model;
@@ -27,6 +28,12 @@ public class UsuarioPresentador implements IUsuario.presenter {
     public void loginUser(String email, String password) {
         model.loginUser(email, password);
     }
+
+    @Override
+    public void loginUserWithGoogle() {
+        model.loginUserWithGoogle();
+    }
+
     @Override
     public void getUserAuth() {
         model.getUserAuth();

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "654908955904",
+    "project_id": "appentrenamiento-2840d",
+    "storage_bucket": "appentrenamiento-2840d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:654908955904:android:301219dafe2dd2842de7e5",
+        "android_client_info": {
+          "package_name": "com.example.proyecto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "654908955904-jk8m5r7ds9lhok6g5tdn1o60ig4dev9u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.proyecto",
+            "certificate_hash": "a15d9a0e3aa41693fe945cbc1a8f57d859c53629"
+          }
+        },
+        {
+          "client_id": "654908955904-ljlljvjvufc2rnenue7lp39slcsm7q7j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClyv4Br7IorR4OrFk4eAloCxR15eQP-lE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "654908955904-ljlljvjvufc2rnenue7lp39slcsm7q7j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

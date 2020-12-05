@@ -86,7 +86,7 @@
         android:layout_centerHorizontal="true"
         android:src="@drawable/ic_gmail"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnRegistroGoogle"
+        app:layout_constraintEnd_toStartOf="@+id/btnLoginGoogle"
         app:layout_constraintHorizontal_bias="0.844"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -99,14 +99,14 @@
         android:layout_centerInParent="true"
         android:src="@drawable/ic_facebook"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnRegistroFacebook"
+        app:layout_constraintEnd_toStartOf="@+id/btnLoginFacebook"
         app:layout_constraintHorizontal_bias="0.859"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.743" />
 
     <Button
-        android:id="@+id/btnRegistroFacebook"
+        android:id="@+id/btnLoginFacebook"
         android:layout_width="278dp"
         android:layout_height="56dp"
         android:layout_marginTop="40dp"
@@ -118,7 +118,7 @@
         app:layout_constraintTop_toBottomOf="@+id/btnRegistro" />
 
     <Button
-        android:id="@+id/btnRegistroGoogle"
+        android:id="@+id/btnLoginGoogle"
         android:layout_width="278dp"
         android:layout_height="57dp"
         android:backgroundTint="#FFFFFF"
@@ -127,7 +127,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.729"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnRegistroFacebook"
+        app:layout_constraintTop_toBottomOf="@+id/btnLoginFacebook"
         app:layout_constraintVertical_bias="0.123" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
