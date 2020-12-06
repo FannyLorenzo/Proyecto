@@ -31,32 +31,47 @@ import androidx.fragment.app.FragmentTransaction;
 
 public class LocationService extends Service {
 
-    EntrenamientoActivity entrenamientoActivity;
+    EntrenamientoActivity activity= new EntrenamientoActivity();
     //TextView tvMensaje;
-    private TextView txt_latitud;
-    private TextView txt_longitud;
-    private TextView txt_direccion;
+    Double latitud = 0.0;
+    Double longitud = 0.0;
+   TextView txt_latitud;
+    TextView txt_longitud;
 
-    public EntrenamientoActivity getMainActivity() {
-        return entrenamientoActivity;
+    public Double getLatitud() {
+        return latitud;
     }
 
+    public Double getLongitud() {
+        return longitud;
+    }
+
+    public EntrenamientoActivity getMainActivity() {
+        return activity;
+    }
+    public void setMainActivity(EntrenamientoActivity activity, TextView tvLatitud, TextView tvLongitud) {
+        this.activity = activity;
+        this.txt_latitud = tvLatitud;
+        this.txt_longitud = tvLongitud;
+    }
+
+    Ubicacion_Fragment ubicacionesFragment;
 
     private LocationCallback locationCallback = new LocationCallback() {
 
+        @SuppressLint("SetTextI18n")
         public void onLocationResult(LocationResult locationResult) {
 
             super.onLocationResult(locationResult);
             if (locationResult != null && locationResult.getLastLocation() != null){
-                double latitude = locationResult.getLastLocation().getLatitude();
-                double longitude = locationResult.getLastLocation().getLongitude();
-                Log.d("LOCATION_UPDATE", latitude+ ", "+longitude);
-
-                // AQUI ANADIDO
-               // tvMensaje.setText(texto);
-// AQUI ME QUEDÉ PENSANDO  SI VA A QUI O NO ESTOS TEXTVIEW, O EN OTRO LUGAR Y COMO ME COMUNCO CON ELLOS
-              //  mapa(latitude, longitude);
-
+                latitud = locationResult.getLastLocation().getLatitude();
+                longitud = locationResult.getLastLocation().getLongitude();
+                Log.d("LOCATION_UPDATE", latitud+ ", "+longitud);
+               // txt_latitud.setText(""+latitud);
+                //txt_longitud.setText(""+longitud);
+           // ESTOOOOOOO QUIERO QUE  ACTUALIZE EN EL .XML DE UBICACION_FRAGMENT, PERO NO ME SALEEEEEEEEE :cccccc
+              //  mapa(-16.3944068, -71.5021534);
+               // mapa(latitud, longitud);
 
             }
         }
@@ -140,20 +155,29 @@ startForeground(Constants.LOCATION_SERVICE_ID, builder.build());
         return super.onStartCommand(intent, flags, startId);
     }
 
-    // esto está mal
+    public void datosToUbicationFragment(){
+
+    }
+
     public void mapa(double lat, double lon) {
         // Fragment del Mapa
         Ubicacion_Fragment fragment = new Ubicacion_Fragment();
 
         Bundle bundle = new Bundle();
-        bundle.putDouble("lat", lat);
-        bundle.putDouble("lon", lon);
+        bundle.putDouble("latitud", lat);
+        bundle.putDouble("longitud", lon);
         fragment.setArguments(bundle);
 
         FragmentManager fragmentManager = getMainActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.map, fragment, null);
         fragmentTransaction.commit();
+
+
     }
+
+
+
+
 
 }

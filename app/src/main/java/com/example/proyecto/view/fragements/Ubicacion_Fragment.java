@@ -12,11 +12,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.proyecto.R;
@@ -39,6 +41,8 @@ public class Ubicacion_Fragment extends Fragment {
     private String mParam2;
     private Button start;
     private Button stop;
+    double lati, longi;
+    TextView latitud, longitud;
 
     public Ubicacion_Fragment() {
         // Required empty public constructor
@@ -61,6 +65,8 @@ public class Ubicacion_Fragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+            lati = getArguments().getDouble("latitud",0.0);
+            longi = getArguments().getDouble("longitud",0.0);
         }
     }
 
@@ -69,6 +75,19 @@ public class Ubicacion_Fragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_ubicacion_, container, false);
+        latitud = (TextView) view.findViewById(R.id.txt_latitud);
+        longitud = (TextView) view.findViewById(R.id.txt_longitud);
+
+        latitud.setText(String.valueOf(lati));
+        longitud.setText(String.valueOf(longi));
+
+        // paso de datos
+        Bundle datos = getArguments();
+        if(datos != null){
+            lati = datos.getDouble("latitud");
+            longi = datos.getDouble("longitud");
+        }
+
         start = view.findViewById(R.id.btn_startLocation);
         stop = view.findViewById(R.id.btn_EndLocation);
 
@@ -121,23 +140,52 @@ public class Ubicacion_Fragment extends Fragment {
     }
 
     private void startLocationService(){
-        if(!isLocationServiceRunning()){
-            Intent intent = new Intent( getActivity().getApplicationContext(), LocationService.class);
+        if(!isLocationServiceRunning()) {
+            Intent intent = new Intent(getActivity().getApplicationContext(), LocationService.class);
             intent.setAction(Constants.ACTION_START_LOCATION_SERVICE);
             getActivity().startService(intent);
-            Toast.makeText(getActivity(),"Location service started", Toast.LENGTH_SHORT).show();
 
-        }
+            LocationService local = new LocationService();
+            local.setMainActivity((EntrenamientoActivity) getActivity(), latitud, longitud);
+
+            Toast.makeText(getActivity(), "Location service started", Toast.LENGTH_SHORT).show();
+        // aqui añadi para que modifique haber si funciona
+            //latitud.setText(" "+getLati());
+            //longitud.setText(" "+getLongi());
+        }else
+            Toast.makeText(getActivity(),"Location service is already  started", Toast.LENGTH_SHORT).show();
     }
     private void stopLocationService(){
         if(isLocationServiceRunning()){
             Intent intent = new Intent(getActivity().getApplicationContext(), LocationService.class);
-            intent.setAction(Constants.ACTION_START_LOCATION_SERVICE);
+            intent.setAction(Constants.ACTION_STOP_LOCATION_SERVICE);
             getActivity().startService(intent);
             Toast.makeText(getActivity(),"Location service stopped", Toast.LENGTH_SHORT).show();
 
-        }
+        }else
+            Toast.makeText(getActivity(),"Location service is already stopped", Toast.LENGTH_SHORT).show();
+    }
+    // esto está mal
+    public void mapa(double lat, double lon) {
+        // Fragment del Mapa
+        Ubicacion_Fragment fragment = new Ubicacion_Fragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putDouble("latitud", lat);
+        bundle.putDouble("longitud", lon);
+        fragment.setArguments(bundle);
+
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.map, fragment, null);
+        fragmentTransaction.commit();
     }
 
+    public double getLati() {
+    return lati;
+    }
 
+    public double getLongi() {
+    return  longi;
+    }
 }

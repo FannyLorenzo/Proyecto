@@ -82,7 +82,10 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
             case R.id.mapa_fragmentButton:
                 // LE PUSE ESTE BUNDLE como en los otros fragments , PEROO NO CREO Q LO UTILIZE
                 Bundle bundle3 = new Bundle();
+                bundle3.putDouble("latitud",ubicacionfragment.getLati());
+                bundle3.putDouble("longitud",ubicacionfragment.getLongi());
                 actividadFragment.setArguments(bundle3);
+                //
                 fragmentTransaction.replace(R.id.activity_fragment,ubicacionfragment);
 
 
