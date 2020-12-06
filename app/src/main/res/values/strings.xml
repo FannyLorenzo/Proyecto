@@ -33,7 +33,12 @@
     <string name="programa_tu_carrera">Programa tu carrera</string>
     <string name="inicia_tu_propia_carrera">Inicia tu propia carrera</string>
     <string name="personas">personas</string>
+<<<<<<< HEAD
 
     <string name="facebook_app_id">4792522207487117</string>
     <string name="fb_login_protocol_scheme">fb4792522207487117</string>
+=======
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+>>>>>>> ac08030045ef52b4e5682e4e702095f565ddf9bb
 </resources>

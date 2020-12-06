@@ -73,4 +73,6 @@ public class UbicacionModel implements IUbicacion.model{
         else
             System.out.println(" **** OK YA CONTABA CON PERMISO - UBICACION");
     }
+
+
 }

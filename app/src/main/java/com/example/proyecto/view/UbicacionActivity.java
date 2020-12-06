@@ -4,6 +4,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -14,6 +16,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -23,6 +26,8 @@ import com.example.proyecto.interfaces.IUbicacion;
 import com.example.proyecto.model.Ubicacion;
 import com.example.proyecto.presenter.PermisosPresenter;
 import com.example.proyecto.presenter.UbicacionPresenter;
+import com.example.proyecto.presenter.UsuarioPresentador;
+import com.example.proyecto.view.fragements.Mapa_Fragment;
 
 public class UbicacionActivity extends AppCompatActivity implements IUbicacion.view {
     private static final int REQUEST_PERMISSION_UBICACION = 111;
@@ -42,6 +47,7 @@ public class UbicacionActivity extends AppCompatActivity implements IUbicacion.v
         txt_longitud = findViewById(R.id.txt_longitud);
         txt_direccion = findViewById(R.id.txt_direccion);
 
+       presenter= new UbicacionPresenter(this); /// AQUIIIIIII
         btn_GPS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,7 +65,10 @@ public class UbicacionActivity extends AppCompatActivity implements IUbicacion.v
                                 location.getTime() + "realtime: " +  "/n" +
                                 location.getElapsedRealtimeNanos());
 
+                        mapa(location.getLatitude(), location.getLongitude());
                         // Aqui guardar objeto UbicacionModel con SQLite
+                        Log.d("LOCATION_UPDATE", location.getLatitude()+ ", "+location.getLongitude());
+
 
                     }
 
@@ -108,4 +117,20 @@ public class UbicacionActivity extends AppCompatActivity implements IUbicacion.v
         requestPermissions(new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, REQUEST_PERMISSION_UBICACION);
         System.out.println("Se ejecutó showResultSuccessUbicacion ***");
     }
+
+    public void mapa(double lat, double lon) {
+        // Fragment del Mapa
+        Mapa_Fragment fragment = new Mapa_Fragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putDouble("lat", lat);
+        bundle.putDouble("lon", lon);
+        fragment.setArguments(bundle);
+
+        FragmentManager fragmentManager = this.getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.map, fragment, null);
+        fragmentTransaction.commit();
+    }
+
 }

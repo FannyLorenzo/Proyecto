@@ -16,14 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Proyecto">
 
-        <!--
-             The API key for Google Maps-based APIs is defined as a string resource.
-             (See the file "res/values/google_maps_api.xml").
-             Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/.
-        -->
+
         <activity android:name=".view.UsuarioActivity" />
 
         <activity android:name=".view.RegistroActivity" />
@@ -41,9 +34,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
 
         <meta-data
             android:name="preloaded_fonts"
@@ -55,6 +45,7 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyDYLhlYb5aFClOGhg5hVuFBJuM-cRVx9Ug" />
 
+<<<<<<< HEAD
         <meta-data android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"/>
 
@@ -71,11 +62,20 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+=======
+        <!-- SERVICIOS -->
+        <service
+            android:name=".model.LocationService"
+            android:enabled="true"
+            android:exported="false"
+            />
+>>>>>>> ac08030045ef52b4e5682e4e702095f565ddf9bb
 
     </application>
 
     <!-- PERMISOS -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION" /> <!-- UBICACION ESPECÍFICA -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- UBICACION EN SEGUNNDO PLANO -->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
