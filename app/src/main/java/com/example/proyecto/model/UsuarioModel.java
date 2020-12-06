@@ -2,9 +2,17 @@ package com.example.proyecto.model;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.proyecto.R;
 import com.example.proyecto.interfaces.IUsuario;
 import com.example.proyecto.persistence.SessionManager;
 import com.example.proyecto.persistence.DatabaseOpenHelper;
@@ -97,6 +105,11 @@ public class UsuarioModel implements IUsuario.model {
             }
         }
         presenter.showRegisterError("Usuario no existente.");
+    }
+
+    @Override
+    public void loginUserWithGoogle() {
+
     }
 
     @Override

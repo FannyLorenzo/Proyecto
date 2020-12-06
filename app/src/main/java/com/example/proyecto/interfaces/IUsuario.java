@@ -13,6 +13,7 @@ public interface IUsuario {
         void showRegisterSuccess(String result, Usuario usuario);
         void showRegisterError(String result);
         void loginUser(String email, String password);
+        void loginUserWithGoogle();
         void getUserAuth();
         void signOutUser();
     }
@@ -20,6 +21,7 @@ public interface IUsuario {
     interface model {
         void registerUser(Usuario usuario);
         void loginUser(String email, String password);
+        void loginUserWithGoogle();
         void getUserAuth();
         void signOutUser();
     }
