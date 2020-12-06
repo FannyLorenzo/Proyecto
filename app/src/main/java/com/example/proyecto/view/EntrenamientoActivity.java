@@ -57,6 +57,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
 
         // el primer fragment con el que inicia
         getSupportFragmentManager().beginTransaction().add(R.id.activity_fragment,actividadFragment).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.activity_fragment,estadisticasFragment);
 
         // locaciones en fragment de Mapa
 
