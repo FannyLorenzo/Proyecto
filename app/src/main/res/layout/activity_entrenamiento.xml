@@ -62,7 +62,7 @@
             android:background="@color/white"
             android:fontFamily="@font/montserrat"
             android:onClick="onClick"
-            android:text="mapa"
+            android:text="Mapa"
             android:textColor="#241332" />
 
         <Button

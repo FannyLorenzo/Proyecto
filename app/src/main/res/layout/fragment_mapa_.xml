@@ -4,12 +4,134 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.fragements.Mapa_Fragment">
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".view.fragements.Mapa_Fragment"/>
 
-<fragment
-    android:id="@+id/map"
-    android:name="com.example.proyecto.view.fragements.Mapa_Fragment"
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/info"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.fragements.Mapa_Fragment" />
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/botones"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/cuadro_ubicaciones"
+        tools:ignore="MissingConstraints">
+    <Button
+        android:id="@+id/btn_startLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/bg"
+        android:text="@string/start"
+        android:textColor="@color/white"/>
+    <Button
+        android:id="@+id/btn_EndLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_gravity="center"
+        android:background="@drawable/bg"
+        android:text="@string/stop"
+        android:textColor="@color/white" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/cuadro_ubicaciones"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/botones"
+        android:background="@drawable/bg_seccion">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat"
+                android:text="@string/ubicaci_n_actual"
+                android:textColor="@color/purple_200"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:text="@string/latitud_"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txt_latitud"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:text="@string/latitud"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:text="@string/longitud_"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txt_longitud"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:text="@string/longitud"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat"
+                android:text="@string/direcci_n"
+                android:textColor="@color/purple_200"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txt_direccion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat"
+                android:text="@string/direccion"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

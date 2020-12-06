@@ -7,7 +7,10 @@ import android.os.Build;
 import com.example.proyecto.MainActivity;
 import com.example.proyecto.interfaces.IPermisos;
 import com.example.proyecto.interfaces.IUbicacion;
+import com.example.proyecto.interfaces.IUsuario;
 import com.example.proyecto.model.Ubicacion;
+import com.example.proyecto.model.UbicacionModel;
+import com.example.proyecto.model.UsuarioModel;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -17,6 +20,12 @@ import androidx.core.app.ActivityCompat;
 public class UbicacionPresenter implements IUbicacion.presenter {
     private IUbicacion.view view;
     private IUbicacion.model model;
+
+    public UbicacionPresenter (IUbicacion.view view) {
+        this.view = view;
+        model = new UbicacionModel(this, this.view);
+    }
+
     @Override
     public void showRegisterError(String error_en_el_registro) {
         view.showRegisterError(error_en_el_registro);

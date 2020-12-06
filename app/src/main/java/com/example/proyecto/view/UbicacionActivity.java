@@ -23,6 +23,7 @@ import com.example.proyecto.interfaces.IUbicacion;
 import com.example.proyecto.model.Ubicacion;
 import com.example.proyecto.presenter.PermisosPresenter;
 import com.example.proyecto.presenter.UbicacionPresenter;
+import com.example.proyecto.presenter.UsuarioPresentador;
 
 public class UbicacionActivity extends AppCompatActivity implements IUbicacion.view {
     private static final int REQUEST_PERMISSION_UBICACION = 111;
@@ -42,6 +43,7 @@ public class UbicacionActivity extends AppCompatActivity implements IUbicacion.v
         txt_longitud = findViewById(R.id.txt_longitud);
         txt_direccion = findViewById(R.id.txt_direccion);
 
+       presenter= new UbicacionPresenter(this); /// AQUIIIIIII
         btn_GPS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
