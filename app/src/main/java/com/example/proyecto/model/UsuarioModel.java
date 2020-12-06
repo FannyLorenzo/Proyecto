@@ -59,6 +59,11 @@ public class UsuarioModel implements IUsuario.model {
 
     @Override
     public void registerUser(Usuario usuario) {
+        if (usuario.getNombre().equals("") || usuario.getEmail().equals("") || usuario.getContraseña().equals("")) {
+            presenter.showRegisterError("Hay campos vacíos.");
+            return;
+        }
+
         ArrayList<Usuario> lista = getUsuarios();
 
         for (Usuario u : lista) {
@@ -90,6 +95,11 @@ public class UsuarioModel implements IUsuario.model {
 
     @Override
     public void loginUser(String email, String password) {
+        if (email.equals("") || password.equals("")) {
+            presenter.showRegisterError("Hay campos vacíos.");
+            return;
+        }
+
         ArrayList<Usuario> lista = getUsuarios();
 
         for (Usuario usuario : lista) {

@@ -125,56 +125,47 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtPasswordRegistro" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/appCompatImageView2"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/ic_gmail"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnLoginGoogle"
-        app:layout_constraintHorizontal_bias="0.792"
+    <View
+        android:layout_width="340dp"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintBottom_toTopOf="@+id/btnLoginGoogle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.45"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.931" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/appCompatImageView"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_centerInParent="true"
-        android:src="@drawable/ic_facebook"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnLoginFacebook"
-        app:layout_constraintHorizontal_bias="0.773"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.837" />
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxTerminos"
+        app:layout_constraintVertical_bias="0.526" />
 
     <Button
         android:id="@+id/btnLoginFacebook"
-        android:layout_width="278dp"
-        android:layout_height="56dp"
-        android:backgroundTint="#FFFFFF"
+        android:layout_width="336dp"
+        android:layout_height="60dp"
+        android:backgroundTint="#3b5998"
+        android:drawableLeft="@drawable/ic_facebook"
+        android:paddingStart="40dp"
         android:text="Registro con Facebook"
+        android:textColor="@color/cardview_light_background"
+        android:textColorHint="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/btnLoginGoogle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.699"
+        app:layout_constraintHorizontal_bias="0.48"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnRegistrate"
-        app:layout_constraintVertical_bias="0.795" />
+        app:layout_constraintVertical_bias="0.76" />
 
     <Button
         android:id="@+id/btnLoginGoogle"
-        android:layout_width="278dp"
-        android:layout_height="57dp"
+        android:layout_width="334dp"
+        android:layout_height="60dp"
         android:backgroundTint="#FFFFFF"
+        android:drawableLeft="@drawable/ic_gmail"
+        android:paddingStart="50dp"
         android:text="Registro con Google"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.699"
+        app:layout_constraintHorizontal_bias="0.48"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.943" />
+        app:layout_constraintVertical_bias="0.942" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

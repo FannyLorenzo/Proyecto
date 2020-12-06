@@ -20,6 +20,7 @@ public class SessionManager {
     private static final String PREF_NAME = "Usuario"; // Sharedpref nombre del archivo
     private static final String IS_LOGGED = "Identificado"; // Claves
     public static final String KEY_EMAIL = "Email"; // Email también en final para que sea accedida
+    public static final String PROVIDER = "Provider"; // Tipo de proveedor: Facebook, Google
 
     // Constructor
     public SessionManager(Context context) {
@@ -56,6 +57,14 @@ public class SessionManager {
     public boolean isLogged() {
         return pref.getBoolean(IS_LOGGED, false);
     }
+
+    // Métodos para saber si se ha logeado con Facebook o Google
+    public void setProvider (String provider) {
+        editor.putString(PROVIDER, provider);
+        editor.commit();
+    }
+
+    public String getProvider() { return pref.getString(PROVIDER, ""); }
 
     public void logOut() {
         editor.clear();

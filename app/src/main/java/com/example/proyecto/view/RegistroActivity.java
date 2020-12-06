@@ -32,6 +32,8 @@ public class RegistroActivity extends AppCompatActivity implements IUsuario.view
         RadioGroup radioGroupGenero = (RadioGroup) findViewById(R.id.radioGroupGenero);
         CheckBox checkBoxTerminos = (CheckBox) findViewById(R.id.checkBoxTerminos);
         Button btnRegistrate = (Button) findViewById(R.id.btnRegistrate);
+        Button btnLoginFacebook = (Button) findViewById(R.id.btnLoginFacebook);
+        Button btnLoginGoogle = (Button) findViewById(R.id.btnLoginGoogle);
 
         presenter = new UsuarioPresentador(this);
 
@@ -45,6 +47,20 @@ public class RegistroActivity extends AppCompatActivity implements IUsuario.view
                 Usuario usuario = new Usuario(nombre, email, contraseña, "");
 
                 presenter.registerUser(usuario);
+            }
+        });
+
+        btnLoginFacebook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Registrese desde el login.", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        btnLoginGoogle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Registrese desde el login.", Toast.LENGTH_LONG).show();
             }
         });
     }
