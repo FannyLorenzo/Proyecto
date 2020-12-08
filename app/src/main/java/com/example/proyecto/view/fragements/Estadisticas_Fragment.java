@@ -76,6 +76,9 @@ public class Estadisticas_Fragment extends Fragment {
         return view;
     }
 
+    public View getView(){
+        return view;
+    }
     public int getSeg(){
         return seg;
     }

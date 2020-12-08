@@ -41,7 +41,7 @@ public class Actividad_Fragment extends Fragment {
     boolean isOn = false;
     Thread thread;
     int seg=0,minuts=0,hour=0;
-    int seg2,minuts2,hour2;
+    String seg2=":00",minuts2=":00",hour2="00";
     Handler h = new Handler();
     TextView segs,minutos,hours;
     // TODO: Rename parameter arguments, choose names that match
@@ -83,9 +83,9 @@ public class Actividad_Fragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
-            seg2 = getArguments().getInt("segundo2",0);
-            minuts2 = getArguments().getInt("minuto2",0);
-            hour2 = getArguments().getInt("hora2",0);
+            seg2 = getArguments().getString("segundo1", ":00");
+            minuts2 = getArguments().getString("minuto1", ":00");
+            hour2 = getArguments().getString("hora1", "00");
         }
     }
 
@@ -94,9 +94,13 @@ public class Actividad_Fragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_actividad_,container,false);
-        segs = (TextView) view.findViewById(R.id.seg_TextView);
-        minutos = (TextView) view.findViewById(R.id.minut_TextView);
-        if (seg2 == 0 && seg != 0){
+        segs = (TextView)view.findViewById(R.id.seg_TextView);
+        minutos = (TextView)view.findViewById(R.id.minut_TextView);
+        hours = (TextView)view.findViewById(R.id.hour_TextView);
+        minutos.setText(minuts2);
+        hours.setText(hour2);
+        segs.setText(seg2);
+        /*if (seg2 == 0 && seg != 0){
 
             if (seg < 10){
                 segs.setText(":0"+String.valueOf(seg));
@@ -111,15 +115,17 @@ public class Actividad_Fragment extends Fragment {
                 segs.setText(":"+seg);
             }
         }
-        minutos.setText(":0"+minuts2);
+        minutos.setText(":0"+minuts2);*/
+
         playPause();
-        cronometro();
+        //cronometro();
 
         stopView = (ImageView) view.findViewById(R.id.stop);
         stopView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 guardarDatos();
+
             }
         });
         return view;
@@ -166,60 +172,6 @@ public class Actividad_Fragment extends Fragment {
         });
     }
 
-    public void cronometro(){
-
-        thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                while (true){
-
-                    if(isOn){
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        seg = seg +1-(int) control;
-                        if (seg == 59){
-                            minuts++;
-                            seg = 0;
-                        }
-                        if (minuts == 59){
-                            hour++;
-                            minuts = 0;
-                        }
-                        h.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                String s = "",m ="", h="";
-                                if (seg < 10){
-                                    s = ":0"+String.valueOf(seg);
-                                }else{
-                                    s = ":"+seg;
-                                }
-                                if (minuts < 10){
-                                    m = ":0"+minuts;
-                                }else{
-                                    m = ":"+minuts;
-                                }
-                                if (hour < 10){
-                                    h = "0"+hour;
-                                }else{
-                                    h = ""+hour;
-                                }
-                                segs.setText(s);
-                                minutos.setText(m);
-                                hours.setText(h);
-                            }
-                        });
-                    }
-                }
-            }
-        });
-        thread.start();
-    }
-
     public void guardarDatos(){
         String carrera = "Carrera";
         String date = new SimpleDateFormat("dd-MMM-yyyy").format(new Date());
@@ -236,6 +188,18 @@ public class Actividad_Fragment extends Fragment {
             db.insert("Entrenamiento", null, registroNuevo);
             Toast.makeText(getContext(), "Datos Almacenados", Toast.LENGTH_SHORT).show();
         }
+    }
+    public void actualizar(){
+        //while (true) {
+
+
+        segs = (TextView) view.findViewById(R.id.seg_TextView);
+        minutos = (TextView) view.findViewById(R.id.minut_TextView);
+        hours = (TextView) view.findViewById(R.id.hour_TextView);
+        segs.setText(seg2);
+        minutos.setText(minuts2);
+        hours.setText(hour2);
+        //}
     }
 
     public void parar(boolean f){
@@ -255,7 +219,14 @@ public class Actividad_Fragment extends Fragment {
             switchNumber--;
         }
     }
+    public boolean getBool(){
+        return isOn;
+    }
     public void setControl(){
         control=control+0.5;
+    }
+
+    public View getView(){
+        return view;
     }
 }

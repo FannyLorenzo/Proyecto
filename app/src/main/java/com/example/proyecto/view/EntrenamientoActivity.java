@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
 import com.example.proyecto.MainActivity;
 import  com.example.proyecto.R;
@@ -19,10 +20,14 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.SyncStateContract;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class EntrenamientoActivity extends AppCompatActivity implements IEntrenamiento.view{
@@ -37,6 +42,21 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
     FragmentTransaction fragmentTransaction;
     Button actividad, mapa, estadisticas;
     Button start, stop;
+
+    ImageView imageView, stopView;
+    AnimatedVectorDrawableCompat avd;
+    AnimatedVectorDrawable avd2;
+    int switchNumber = 0;
+    View view;
+    double control = 0;
+    boolean isOn = false;
+    Thread thread;
+    int seg=0,minuts=0,hour=0;
+    int seg2,minuts2,hour2;
+    Handler h = new Handler();
+    TextView segs,minutos,hours,estadist_minuts;
+
+    String s = ":00",m =":00", ho="00";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +76,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
         //music_fragment = new Music_Fragment();
 
         // el primer fragment con el que inicia
+        cronometro();
         getSupportFragmentManager().beginTransaction().add(R.id.activity_fragment,actividadFragment).commit();
         getSupportFragmentManager().beginTransaction().add(R.id.activity_fragment,estadisticasFragment);
 
@@ -87,8 +108,6 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                 actividadFragment.setArguments(bundle3);
                 //
                 fragmentTransaction.replace(R.id.activity_fragment,ubicacionfragment);
-
-
                break;
             case R.id.estadisticas_fragmentButton:
                 Bundle bundle = new Bundle();
@@ -104,6 +123,75 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
         fragmentTransaction.commit();
     }
 
+    public void cronometro(){
 
+        thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                while (true){
+                    isOn = actividadFragment.getBool();
+                    if(isOn){
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        seg = seg +1-(int) control;
+                        if (seg == 60){
+                            minuts++;
+                            seg = 0;
+                        }
+                        if (minuts == 60){
+                            hour++;
+                            minuts = 0;
+                        }
+                        h.post(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                if (seg < 10){
+                                    s = ":0"+String.valueOf(seg);
+                                }else{
+                                    s = ":"+seg;
+                                }
+                                if (minuts < 10){
+                                    m = ":0"+minuts;
+                                }else{
+                                    m = ":"+minuts;
+                                }
+                                if (hour < 10){
+                                    ho = "0"+hour;
+                                }else{
+                                    ho = ""+hour;
+                                }
+                                actualizar();
+                                System.out.println(s);
+                                segs = (TextView) actividadFragment.getView().findViewById(R.id.seg_TextView);
+                                segs.setText(s);
+                                minutos = (TextView) actividadFragment.getView().findViewById(R.id.minut_TextView);
+                                hours = (TextView) actividadFragment.getView().findViewById(R.id.hour_TextView);
+                                minutos.setText(m);
+                                hours.setText(ho);
+                                /*segs.setText(s);
+                                minutos.setText(m);
+                                hours.setText(ho);*/
+                            }
+                        });
+                    }
+                }
+            }
+        });
+        thread.start();
+    }
+
+    public void actualizar(){
+
+        Bundle bundle = new Bundle();
+        bundle.putString("segundo1",s);
+        bundle.putString("minuto1",m);
+        bundle.putString("hora1",ho);
+        estadisticasFragment.setArguments(bundle);
+    }
 
 }
