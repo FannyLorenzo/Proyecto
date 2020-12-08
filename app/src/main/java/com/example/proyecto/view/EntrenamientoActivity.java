@@ -12,6 +12,8 @@ import com.example.proyecto.interfaces.IEntrenamiento;
 import com.example.proyecto.model.Constants;
 import com.example.proyecto.model.LocationService;
 import com.example.proyecto.view.fragements.*;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationResult;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -24,6 +26,7 @@ import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.SyncStateContract;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -56,8 +59,13 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
     Handler h = new Handler();
     TextView segs,minutos,hours,estadist_minuts;
 
+
     String s = ":00",m =":00", ho="00";
 
+    /******************************************/
+    Double latitud = 0.0;
+    Double longitud = 0.0;
+    TextView latitud_F,longitu_F;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +84,8 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
         //music_fragment = new Music_Fragment();
 
         // el primer fragment con el que inicia
+        LocationService local = new LocationService();
+
         cronometro();
         getSupportFragmentManager().beginTransaction().add(R.id.activity_fragment,actividadFragment).commit();
         getSupportFragmentManager().beginTransaction().add(R.id.activity_fragment,estadisticasFragment);
@@ -103,8 +113,8 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
             case R.id.mapa_fragmentButton:
                 // LE PUSE ESTE BUNDLE como en los otros fragments , PEROO NO CREO Q LO UTILIZE
                 Bundle bundle3 = new Bundle();
-                bundle3.putDouble("latitud",ubicacionfragment.getLati());
-                bundle3.putDouble("longitud",ubicacionfragment.getLongi());
+                bundle3.putDouble("latitud",latitud);
+                bundle3.putDouble("longitud",longitud);
                 actividadFragment.setArguments(bundle3);
                 //
                 fragmentTransaction.replace(R.id.activity_fragment,ubicacionfragment);
@@ -116,7 +126,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                 bundle.putInt("hora1",actividadFragment.getHour());
                 estadisticasFragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.activity_fragment,estadisticasFragment);
-                actividadFragment.parar(false);
+                //actividadFragment.parar(false);
                 actividadFragment.changeAnimation();
                 break;
         }
@@ -142,6 +152,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                             minuts++;
                             seg = 0;
                         }
+
                         if (minuts == 60){
                             hour++;
                             minuts = 0;
@@ -192,6 +203,27 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
         bundle.putString("minuto1",m);
         bundle.putString("hora1",ho);
         estadisticasFragment.setArguments(bundle);
+    }
+
+    public void ubicacion(){
+        LocationCallback locationCallback = new LocationCallback() {
+
+            @SuppressLint("SetTextI18n")
+            public void onLocationResult(LocationResult locationResult) {
+
+                super.onLocationResult(locationResult);
+                if (locationResult != null && locationResult.getLastLocation() != null){
+                    latitud = locationResult.getLastLocation().getLatitude();
+                    longitud = locationResult.getLastLocation().getLongitude();
+                    Log.d("LOCATION_UPDATE", latitud+ ", "+longitud);
+                    // txt_latitud.setText(""+latitud);
+                    //txt_longitud.setText(""+longitud);
+                    // ESTOOOOOOO QUIERO QUE  ACTUALIZE EN EL .XML DE UBICACION_FRAGMENT, PERO NO ME SALEEEEEEEEE :cccccc
+                    //  mapa(-16.3944068, -71.5021534);
+                    // mapa(latitud, longitud);
+                }
+            }
+        };
     }
 
 }

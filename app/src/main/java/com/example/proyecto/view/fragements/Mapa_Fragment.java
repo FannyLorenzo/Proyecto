@@ -16,13 +16,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class Mapa_Fragment extends SupportMapFragment implements OnMapReadyCallback {
 
     double lat, lon;
-
+    View rootView;
     public Mapa_Fragment() { }
 
 
     @Override
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
-        View rootView = super.onCreateView(layoutInflater, viewGroup, bundle);
+        rootView = super.onCreateView(layoutInflater, viewGroup, bundle);
 
         if(getArguments() != null) {
             this.lat = getArguments().getDouble("lat");
@@ -49,6 +49,11 @@ public class Mapa_Fragment extends SupportMapFragment implements OnMapReadyCallb
         UiSettings settings = googleMap.getUiSettings();
 
         settings.setZoomControlsEnabled(true);
+    }
+
+
+    public View getView(){
+        return rootView;
     }
 }
 

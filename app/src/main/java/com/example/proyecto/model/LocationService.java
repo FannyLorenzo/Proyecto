@@ -72,10 +72,8 @@ public class LocationService extends Service {
            // ESTOOOOOOO QUIERO QUE  ACTUALIZE EN EL .XML DE UBICACION_FRAGMENT, PERO NO ME SALEEEEEEEEE :cccccc
               //  mapa(-16.3944068, -71.5021534);
                // mapa(latitud, longitud);
-
             }
         }
-
     };
 
 
