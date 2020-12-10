@@ -104,9 +104,9 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
         switch (view.getId()){
             case R.id.actividad_fragmentButton:
                 Bundle bundle2 = new Bundle();
-                bundle2.putInt("segundo2",estadisticasFragment.getSeg());
-                bundle2.putInt("minuto2",estadisticasFragment.getMinut());
-                bundle2.putInt("hora2",estadisticasFragment.getHour());
+                bundle2.putString("segundo1",s);
+                bundle2.putString("minuto1",m);
+                bundle2.putString("hora1",ho);
                 actividadFragment.setArguments(bundle2);
                 fragmentTransaction.replace(R.id.activity_fragment,actividadFragment);
                 break;
@@ -122,7 +122,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
             case R.id.estadisticas_fragmentButton:
                 Bundle bundle = new Bundle();
                 bundle.putInt("segundo1",actividadFragment.getSeg());
-                bundle.putInt("minuto1",actividadFragment.getMinuts());
+                bundle.putInt("minuto1",minuts);
                 bundle.putInt("hora1",actividadFragment.getHour());
                 estadisticasFragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.activity_fragment,estadisticasFragment);

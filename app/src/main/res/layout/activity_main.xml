@@ -40,23 +40,24 @@
             android:textColor="@color/purple_App_Suave"
             android:textSize="17sp"
              app:layout_constraintBottom_toBottomOf="@id/txt_1"/>
-        <ImageView
-            android:id="@+id/dospersonas"
-            android:layout_width="match_parent"
-            android:layout_height="290dp"
-            android:contentDescription="@string/personas"
-            android:src="@drawable/dospersonas" />
-        <Button
-            android:id="@+id/btn_toPermissions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/bg"
-            android:text="@string/siguiente"
-            android:textColor="#FFFFFF"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/txt_2" />
 
+    <ImageView
+        android:id="@+id/dospersonas"
+        android:layout_width="match_parent"
+        android:layout_height="295dp"
+        android:contentDescription="@string/personas"
+        android:src="@drawable/dospersonas" />
+
+    <Button
+        android:id="@+id/btn_toPermissions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/bg"
+        android:text="@string/siguiente"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@id/txt_2"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </LinearLayout>
