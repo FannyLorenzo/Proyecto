@@ -66,9 +66,9 @@ public class UbicacionModel implements IUbicacion.model{
     }
     public void solicitarPermisosUbicacion(){
         int permisoUbicacion = checkSelfPermission(_context, Manifest.permission.ACCESS_FINE_LOCATION);
-        int permisoUbicacionB = checkSelfPermission(_context, Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+     //   int permisoUbicacionB = checkSelfPermission(_context, Manifest.permission.ACCESS_BACKGROUND_LOCATION);
 // ubicacion
-        if(permisoUbicacion != PackageManager.PERMISSION_GRANTED || permisoUbicacionB != PackageManager.PERMISSION_GRANTED)
+        if(permisoUbicacion != PackageManager.PERMISSION_GRANTED)// || permisoUbicacionB != PackageManager.PERMISSION_GRANTED)
             presenter.showRequiredUbicacion();
         else
             System.out.println(" **** OK YA CONTABA CON PERMISO - UBICACION");

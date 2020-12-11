@@ -110,11 +110,10 @@ public class UbicacionActivity extends AppCompatActivity implements IUbicacion.v
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.Q)
+    
     @Override
     public void showRequiredUbicacion() {
         requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSION_UBICACION);
-        requestPermissions(new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, REQUEST_PERMISSION_UBICACION);
         System.out.println("Se ejecutó showResultSuccessUbicacion ***");
     }
 

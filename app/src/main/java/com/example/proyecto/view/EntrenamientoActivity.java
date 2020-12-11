@@ -194,7 +194,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                                 }else{
                                     ho = ""+hour;
                                 }
-                                actualizar();
+                               // actualizar();
                                 System.out.println(s);
                                 segs = (TextView) actividadFragment.getView().findViewById(R.id.seg_TextView);
                                 segs.setText(s);

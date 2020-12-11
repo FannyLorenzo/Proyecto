@@ -33,12 +33,12 @@ public class PermisosModel implements IPermisos.model {
         else
             System.out.println(" **** OK YA CONTABA CON PERMISO - STORAGE");
 }
-    @RequiresApi(api = Build.VERSION_CODES.Q)
+
     public void solicitarPermisosUbicacion(){
         int permisoUbicacion = checkSelfPermission(_context, Manifest.permission.ACCESS_FINE_LOCATION);
-       int permisoUbicacionB = checkSelfPermission(_context, Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+       //int permisoUbicacionB = checkSelfPermission(_context, Manifest.permission.ACCESS_BACKGROUND_LOCATION);
 // ubicacion
-        if(permisoUbicacion != PackageManager.PERMISSION_GRANTED || permisoUbicacionB != PackageManager.PERMISSION_GRANTED)
+        if(permisoUbicacion != PackageManager.PERMISSION_GRANTED )
             presenter.showResultSuccessUbicacion();
         else
             System.out.println(" **** OK YA CONTABA CON PERMISO - UBICACION");

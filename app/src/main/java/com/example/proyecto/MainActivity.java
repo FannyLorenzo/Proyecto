@@ -53,7 +53,7 @@ private Button btn_next;
     @Override
     public void showResultSuccessUbicacion() {
         requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSION_UBICACION);
-        requestPermissions(new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, REQUEST_PERMISSION_UBICACION);
+       // requestPermissions(new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, REQUEST_PERMISSION_UBICACION);
         System.out.println("Se ejecutó showResultSuccessUbicacion ***");
     }
 }
