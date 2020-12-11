@@ -1,117 +1,141 @@
 package com.example.proyecto.view;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
-import android.media.MediaPlayer;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.provider.MediaStore;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.example.proyecto.R;
-import com.example.proyecto.interfaces.IAudio;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
+import com.example.proyecto.model.MusicFiles;
+import com.example.proyecto.view.fragements.AlbumFragment;
+import com.example.proyecto.view.fragements.SongsFragment;
+import com.google.android.material.tabs.TabLayout;
 
-import java.io.File;
 import java.util.ArrayList;
 
-public class AudioActivity extends AppCompatActivity implements IAudio.view {
-    private static final int MY_PERMISSION_REQUEST =1;
-    ArrayList<String> arrayList;
-    ListView listView;
-    String[] items;
 
-    ArrayAdapter<String> adapter;
-    static MediaPlayer mediaPlayer;
-    Uri u;
+public class AudioActivity extends AppCompatActivity  {
+    public static final int REQUEST_CODE = 1;
+    public static ArrayList<MusicFiles> musicFiles;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio);
+        permission();
 
-        listView = (ListView) findViewById(R.id.music);
-
-        runtimePermission();
-    }
-    public void runtimePermission(){
-        Dexter.withActivity(this).withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                .withListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted(PermissionGrantedResponse response) {
-                        display();
-                    }
-
-                    @Override
-                    public void onPermissionDenied(PermissionDeniedResponse response) {
-
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-                        token.continuePermissionRequest();
-                    }
-                }).check();
     }
 
-    public ArrayList<File> findSong(File file){
-        ArrayList<File> arrayList = new ArrayList<>();
-        File[] files = file.listFiles();
-        for (File singleFile: files){
-            if (singleFile.isDirectory() && !singleFile.isHidden()){
-                arrayList.addAll(findSong(singleFile));
-            }else {
-                if (singleFile.getName().endsWith(".mp3") ||
-                        singleFile.getName().endsWith(".wsv")){
-                    arrayList.add(singleFile);
-                }
+    private void permission(){
+        if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(AudioActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_CODE);
+        }
+        else {
+            musicFiles = getAllAudio(this);
+            initViewPager();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE){
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                musicFiles = getAllAudio(this);
+                initViewPager();
+            }
+            else{
+                ActivityCompat.requestPermissions(AudioActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        REQUEST_CODE);
             }
         }
-        return arrayList;
     }
 
-    public void display(){
-        final ArrayList<File> mySongs = findSong(Environment.getExternalStorageDirectory());
+    private void initViewPager(){
+        ViewPager viewPager = findViewById(R.id.viewpager);
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter.addFragmets(new SongsFragment(), "Songs");
+        viewPagerAdapter.addFragmets(new AlbumFragment(), "Album");
+        viewPager.setAdapter(viewPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+    }
 
-        items = new String[mySongs.size()];
-        for (int i = 0; i < mySongs.size(); i++){
-            items[i] = mySongs.get(i).getName().toString().replace(".mp3","").replace(".wsv","");
+    public static class ViewPagerAdapter extends FragmentPagerAdapter {
+        private ArrayList <Fragment> fragments;
+        private ArrayList <String> titles;
 
+        public ViewPagerAdapter(@NonNull FragmentManager fm) {
+            super(fm);
+            this.fragments = new ArrayList<>();
+            this.titles = new ArrayList<>();
         }
 
-        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,items);
-        listView.setAdapter(myAdapter);
+        void addFragmets (Fragment fragment, String title){
+            fragments.add(fragment);
+            titles.add(title);
+        }
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            return fragments.get(position);
+        }
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                /*if(mediaPlayer != null) {
-                    mediaPlayer.stop();
-                    mediaPlayer.reset();
-                    mediaPlayer.release();
-                }
-                String songName = listView.getItemAtPosition(position).toString();
-                u = Uri.parse(mySongs.get(position));
-                mediaPlayer = MediaPlayer.create(getApplicationContext(),u);
-                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        mediaPlayer.start();
-                    }
-                });*/
+        @Override
+        public int getCount() {
+            return fragments.size();
+        }
 
-                /*startActivity(new Intent(getApplicationContext(),PlayerActivity.class)
-                .putExtra("songs", mySongs).putExtra("songname",songName));*/
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return titles.get(position);
+        }
+    }
 
+    public static ArrayList<MusicFiles> getAllAudio(Context context){
+        ArrayList<MusicFiles> tempAudioList = new ArrayList<>();
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String [] projection = {
+                MediaStore.Audio.Media.ALBUM,
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.DURATION,
+                MediaStore.Audio.Media.DATA,
+                MediaStore.Audio.Media.ARTIST,
+        };
+        Cursor cursor = context.getContentResolver().query(uri, projection, null,
+                null, null);
+        if (cursor != null){
+            while(cursor.moveToNext()){
+                String album = cursor.getString(0);
+                String tittle = cursor.getString(1);
+                String duration = cursor.getString(2);
+                String path = cursor.getString(3);
+                String artist = cursor.getString(4);
+
+                MusicFiles musicFiles = new MusicFiles(path, tittle, artist, album, duration);
+                //toma log.e para comprobar
+                Log.e("Path : " + path, "Album : " + album);
+                tempAudioList.add(musicFiles);
             }
-        });
+            cursor.close();
+        }
+        return tempAudioList;
     }
 }
