@@ -61,16 +61,13 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-=======
         <!-- SERVICIOS -->
         <service
             android:name=".model.LocationService"
             android:enabled="true"
             android:exported="false"
             />
->>>>>>> ac08030045ef52b4e5682e4e702095f565ddf9bb
-
-    </application>
+  </application>
 
     <!-- PERMISOS -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />

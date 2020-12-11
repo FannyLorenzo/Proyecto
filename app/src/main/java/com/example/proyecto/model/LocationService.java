@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.proyecto.R;
 import com.example.proyecto.view.EntrenamientoActivity;
+import com.example.proyecto.view.fragements.Mapa_Fragment;
 import com.example.proyecto.view.fragements.Ubicacion_Fragment;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -31,31 +33,23 @@ import androidx.fragment.app.FragmentTransaction;
 
 public class LocationService extends Service {
 
-    EntrenamientoActivity activity= new EntrenamientoActivity();
+    EntrenamientoActivity activity;
     //TextView tvMensaje;
     Double latitud = 0.0;
     Double longitud = 0.0;
-   TextView txt_latitud;
-    TextView txt_longitud;
 
-    public Double getLatitud() {
-        return latitud;
-    }
+    private final IBinder mbinder = new LocalService();
 
-    public Double getLongitud() {
-        return longitud;
+    public IBinder onBind(Intent intent) {
+       return mbinder;
     }
+    /* Método de acceso */
+    public class LocalService extends Binder {
+        public LocationService getService() {
 
-    public EntrenamientoActivity getMainActivity() {
-        return activity;
+            return LocationService.this;
+        }
     }
-    public void setMainActivity(EntrenamientoActivity activity, TextView tvLatitud, TextView tvLongitud) {
-        this.activity = activity;
-        this.txt_latitud = tvLatitud;
-        this.txt_longitud = tvLongitud;
-    }
-
-    Ubicacion_Fragment ubicacionesFragment;
 
     private LocationCallback locationCallback = new LocationCallback() {
 
@@ -67,22 +61,10 @@ public class LocationService extends Service {
                 latitud = locationResult.getLastLocation().getLatitude();
                 longitud = locationResult.getLastLocation().getLongitude();
                 Log.d("LOCATION_UPDATE", latitud+ ", "+longitud);
-               // txt_latitud.setText(""+latitud);
-                //txt_longitud.setText(""+longitud);
-           // ESTOOOOOOO QUIERO QUE  ACTUALIZE EN EL .XML DE UBICACION_FRAGMENT, PERO NO ME SALEEEEEEEEE :cccccc
-              //  mapa(-16.3944068, -71.5021534);
-               // mapa(latitud, longitud);
+
             }
         }
     };
-
-
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        throw new UnsupportedOperationException("No implemntado aún");
-    }
 
     @SuppressLint("MissingPermission")
     private void startLocationService(){
@@ -130,6 +112,7 @@ public class LocationService extends Service {
         LocationServices.getFusedLocationProviderClient(this)
                 .requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
 startForeground(Constants.LOCATION_SERVICE_ID, builder.build());
+
     }
 
     private void stopLocationService(){
@@ -153,27 +136,13 @@ startForeground(Constants.LOCATION_SERVICE_ID, builder.build());
         return super.onStartCommand(intent, flags, startId);
     }
 
-    public void datosToUbicationFragment(){
-
+    public Double getLatitud() {
+        return latitud;
     }
 
-    public void mapa(double lat, double lon) {
-        // Fragment del Mapa
-        Ubicacion_Fragment fragment = new Ubicacion_Fragment();
-
-        Bundle bundle = new Bundle();
-        bundle.putDouble("latitud", lat);
-        bundle.putDouble("longitud", lon);
-        fragment.setArguments(bundle);
-
-        FragmentManager fragmentManager = getMainActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.map, fragment, null);
-        fragmentTransaction.commit();
-
-
+    public Double getLongitud() {
+        return longitud;
     }
-
 
 
 

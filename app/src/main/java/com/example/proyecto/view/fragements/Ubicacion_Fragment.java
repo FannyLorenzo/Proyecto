@@ -1,10 +1,13 @@
 package com.example.proyecto.view.fragements;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -14,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,27 +33,31 @@ import com.example.proyecto.view.EntrenamientoActivity;
 
 public class Ubicacion_Fragment extends Fragment {
     View view;
+    //TextView tvMensaje;
+    Double latitud = 1.0;
+    Double longitud = 1.0;
+   @SuppressLint("StaticFieldLeak")
+   public static TextView txt_latitud;
+    @SuppressLint("StaticFieldLeak")
+    public static TextView txt_longitud;
+
     private  static final int REQUEST_CODE_LOCATION_PERMISSION=1;
 
-    // TODO: Rename parameter arguments, choose names that match
+    //  Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
+    // Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private Button start;
     private Button stop;
-    double lati, longi;
-    TextView latitud, longitud;
 
     public Ubicacion_Fragment() {
         // Required empty public constructor
     }
 
-
-    // TODO: Rename and change types and number of parameters
     public static Ubicacion_Fragment newInstance(String param1, String param2) {
         Ubicacion_Fragment fragment = new Ubicacion_Fragment();
         Bundle args = new Bundle();
@@ -65,8 +73,8 @@ public class Ubicacion_Fragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
-            lati = getArguments().getDouble("latitud",0.0);
-            longi = getArguments().getDouble("longitud",0.0);
+            latitud = getArguments().getDouble("latitud",0.0);
+            longitud = getArguments().getDouble("longitud",0.0);
         }
     }
 
@@ -75,60 +83,59 @@ public class Ubicacion_Fragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_ubicacion_, container, false);
-        latitud = (TextView) view.findViewById(R.id.txt_latitud);
-        longitud = (TextView) view.findViewById(R.id.txt_longitud);
+        txt_latitud = view.findViewById(R.id.txt_latitud);
+        txt_latitud.setText(String.valueOf(latitud));
 
-        latitud.setText(String.valueOf(lati));
-        longitud.setText(String.valueOf(longi));
+        txt_longitud = view.findViewById(R.id.txt_longitud);
+        txt_longitud.setText(String.valueOf(longitud));
 
-        // paso de datos
-        Bundle datos = getArguments();
-        if(datos != null){
-            lati = datos.getDouble("latitud");
-            longi = datos.getDouble("longitud");
-        }
+        mapa(latitud,longitud);
 
         start = view.findViewById(R.id.btn_startLocation);
         stop = view.findViewById(R.id.btn_EndLocation);
 
-       /// ESTO NO, TENGO Q ARREGLARRR
-            // Aqui maso para q funcione yeah
             start.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (ContextCompat.checkSelfPermission(
-                            getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(getActivity(),
-                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                REQUEST_CODE_LOCATION_PERMISSION);
-                    } else {
-                        startLocationService();
-                    }
+                   iniciarRecorrido();
                 }
             });
 
             stop.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    stopLocationService();
+                    pararRecorrido();
                 }
             });
-        
-        
-        
+
         return view;
+    }
+
+    private void iniciarRecorrido() {
+        if (ContextCompat.checkSelfPermission(
+                getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_CODE_LOCATION_PERMISSION);
+        } else {
+            startLocationService();
+        }
+    }
+
+    private void pararRecorrido(){
+        stopLocationService();
     }
 
     // Añadidos para la ubicacion
     private boolean isLocationServiceRunning(){
-        ActivityManager activityManager =
-                (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager activityManager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
         if(activityManager != null ){
             for(ActivityManager.RunningServiceInfo service:
                     activityManager.getRunningServices(Integer.MAX_VALUE)){
                 if(LocationService.class.getName().equals(service.service.getClassName())){
                     if(service.foreground){
+
                         return true;
                     }
                 }
@@ -145,13 +152,9 @@ public class Ubicacion_Fragment extends Fragment {
             intent.setAction(Constants.ACTION_START_LOCATION_SERVICE);
             getActivity().startService(intent);
 
-            LocationService local = new LocationService();
-            local.setMainActivity((EntrenamientoActivity) getActivity(), latitud, longitud);
-
             Toast.makeText(getActivity(), "Location service started", Toast.LENGTH_SHORT).show();
-        // aqui añadi para que modifique haber si funciona
-            //latitud.setText(" "+getLati());
-            //longitud.setText(" "+getLongi());
+
+
         }else
             Toast.makeText(getActivity(),"Location service is already  started", Toast.LENGTH_SHORT).show();
     }
@@ -165,27 +168,58 @@ public class Ubicacion_Fragment extends Fragment {
         }else
             Toast.makeText(getActivity(),"Location service is already stopped", Toast.LENGTH_SHORT).show();
     }
-    // esto está mal
-    public void mapa(double lat, double lon) {
-        // Fragment del Mapa
-        Ubicacion_Fragment fragment = new Ubicacion_Fragment();
-
-        Bundle bundle = new Bundle();
-        bundle.putDouble("latitud", lat);
-        bundle.putDouble("longitud", lon);
-        fragment.setArguments(bundle);
-
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.map, fragment, null);
-        fragmentTransaction.commit();
-    }
 
     public double getLati() {
-    return lati;
+    return latitud;
     }
 
     public double getLongi() {
-    return  longi;
+    return  longitud;
     }
+
+    public TextView getTxt_latitud() {
+        return txt_latitud;
+    }
+
+    public TextView getTxt_longitud() {
+        return txt_longitud;
+    }
+    @SuppressLint("SetTextI18n")
+
+
+    public View getView(){
+        return view;
+    }
+
+    public void mapa(double lat, double lon) {
+        Mapa_Fragment mapaFragment = new Mapa_Fragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putDouble("lat", lat);
+        bundle.putDouble("lon", lon);
+        mapaFragment.setArguments(bundle);
+
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.map, mapaFragment, null);
+        fragmentTransaction.commit();
+    }
+
+    // Ubicacionn
+    LocationService myLocationService;
+    boolean isBindLocation = false;
+    private ServiceConnection MConnection = new ServiceConnection( ) {
+        public void onServiceConnected(ComponentName name, IBinder service) {
+
+            LocationService.LocalService localService = (LocationService.LocalService) service;
+            myLocationService = localService.getService();
+            isBindLocation = true;
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            isBindLocation = false;
+        }
+    };
+
+
 }

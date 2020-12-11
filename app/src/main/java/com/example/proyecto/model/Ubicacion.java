@@ -8,8 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Ubicacion {
-    private long latitud;
-    private  long longitud;
+    private double latitud;
+    private  double longitud;
     private Date tiempoDeRegistro;
     @SuppressLint("SimpleDateFormat")
     private DateFormat fechaHora = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -25,21 +25,7 @@ public class Ubicacion {
         this.tiempoDeRegistro = new Date();
     }
 
-    public long getLatitud() {
-        return latitud;
-    }
 
-    public void setLatitud(long latitud) {
-        this.latitud = latitud;
-    }
-
-    public long getLongitud() {
-        return longitud;
-    }
-
-    public void setLongitud(long longitud) {
-        this.longitud = longitud;
-    }
 
     public Date getTiempoDeRegistro() {
         return tiempoDeRegistro;
@@ -58,7 +44,23 @@ public class Ubicacion {
 
     }
 
-    public String getFecha( Date tiempoDeRegistro) {
+    public double getLatitud() {
+        return latitud;
+    }
+
+    public void setLatitud(double latitud) {
+        this.latitud = latitud;
+    }
+
+    public double getLongitud() {
+        return longitud;
+    }
+
+    public void setLongitud(double longitud) {
+        this.longitud = longitud;
+    }
+
+    public String getFecha(Date tiempoDeRegistro) {
         return fecha.format(tiempoDeRegistro);
     }
 

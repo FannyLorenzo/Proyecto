@@ -1,42 +1,42 @@
 package com.example.proyecto.view;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
-
-import com.example.proyecto.MainActivity;
-import  com.example.proyecto.R;
-import com.example.proyecto.interfaces.IEntrenamiento;
-import com.example.proyecto.model.Constants;
-import com.example.proyecto.model.LocationService;
-import com.example.proyecto.view.fragements.*;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationResult;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
-import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.SyncStateContract;
-import android.util.Log;
+import android.os.IBinder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.proyecto.R;
+import com.example.proyecto.interfaces.IEntrenamiento;
+import com.example.proyecto.model.Constants;
+import com.example.proyecto.model.LocationService;
+import com.example.proyecto.view.fragements.Actividad_Fragment;
+import com.example.proyecto.view.fragements.Estadisticas_Fragment;
+import com.example.proyecto.view.fragements.Mapa_Fragment;
+import com.example.proyecto.view.fragements.Ubicacion_Fragment;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
+
 public class EntrenamientoActivity extends AppCompatActivity implements IEntrenamiento.view{
 
     private  static final int REQUEST_CODE_LOCATION_PERMISSION=1;
-
     Actividad_Fragment actividadFragment;
     Estadisticas_Fragment estadisticasFragment;
     Mapa_Fragment mapaFragment;  // aqui
@@ -44,7 +44,6 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
     //Music_Fragment music_fragment;
     FragmentTransaction fragmentTransaction;
     Button actividad, mapa, estadisticas;
-    Button start, stop;
 
     ImageView imageView, stopView;
     AnimatedVectorDrawableCompat avd;
@@ -58,14 +57,15 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
     int seg2,minuts2,hour2;
     Handler h = new Handler();
     TextView segs,minutos,hours,estadist_minuts;
-
-
     String s = ":00",m =":00", ho="00";
 
-    /******************************************/
-    Double latitud = 0.0;
-    Double longitud = 0.0;
-    TextView latitud_F,longitu_F;
+    // ubicacion
+    int nrofragment=0;
+    LocationService myLocationService;
+    boolean isBindLocation = false;
+    Double latitud = 1.0;
+    Double longitud = 1.0;
+    TextView txt_latitud, txt_longitud;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,15 +83,15 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
         ubicacionfragment = new Ubicacion_Fragment();
         //music_fragment = new Music_Fragment();
 
-        // el primer fragment con el que inicia
-        LocationService local = new LocationService();
+        // servicio de localización
+        Intent serviceIntent = new Intent(this,LocationService.class);
+        bindService(serviceIntent, MConnection, Context.BIND_AUTO_CREATE);
 
+
+        //cronometro
         cronometro();
         getSupportFragmentManager().beginTransaction().add(R.id.activity_fragment,actividadFragment).commit();
         getSupportFragmentManager().beginTransaction().add(R.id.activity_fragment,estadisticasFragment);
-
-        // locaciones en fragment de Mapa
-
 
 
     }
@@ -103,6 +103,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
 
         switch (view.getId()){
             case R.id.actividad_fragmentButton:
+                nrofragment=0;
                 Bundle bundle2 = new Bundle();
                 bundle2.putString("segundo1",s);
                 bundle2.putString("minuto1",m);
@@ -111,22 +112,23 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                 fragmentTransaction.replace(R.id.activity_fragment,actividadFragment);
                 break;
             case R.id.mapa_fragmentButton:
-                // LE PUSE ESTE BUNDLE como en los otros fragments , PEROO NO CREO Q LO UTILIZE
+                nrofragment=1;
                 Bundle bundle3 = new Bundle();
-                bundle3.putDouble("latitud",latitud);
+                bundle3.putDouble("latitud", latitud);
                 bundle3.putDouble("longitud",longitud);
-                actividadFragment.setArguments(bundle3);
-                //
+                ubicacionfragment.setArguments(bundle3);
                 fragmentTransaction.replace(R.id.activity_fragment,ubicacionfragment);
-               break;
+
+                break;
             case R.id.estadisticas_fragmentButton:
+                nrofragment=2;
                 Bundle bundle = new Bundle();
                 bundle.putInt("segundo1",actividadFragment.getSeg());
                 bundle.putInt("minuto1",minuts);
                 bundle.putInt("hora1",actividadFragment.getHour());
                 estadisticasFragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.activity_fragment,estadisticasFragment);
-                //actividadFragment.parar(false);
+                //actividadFragment.parar(false); /// aqui algo
                 actividadFragment.changeAnimation();
                 break;
         }
@@ -157,6 +159,20 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                             hour++;
                             minuts = 0;
                         }
+
+                        /// Ubicacion
+                        iniciarRecorrido();
+                        latitud = myLocationService.getLatitud();
+                        longitud = myLocationService.getLongitud();
+                        System.out.println("aqui mero Latitud "+ latitud +"/nLongitud "+longitud);
+                        if(nrofragment==1) {
+                            actualizaCoordenadas();
+                            actualizarUbicacion();
+                        }
+
+                        if(seg%5==0){
+                            //aqui guardar en BD datos
+                        }
                         h.post(new Runnable() {
                             @Override
                             public void run() {
@@ -184,9 +200,15 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                                 hours = (TextView) actividadFragment.getView().findViewById(R.id.hour_TextView);
                                 minutos.setText(m);
                                 hours.setText(ho);
-                                /*segs.setText(s);
-                                minutos.setText(m);
-                                hours.setText(ho);*/
+                                // ubicacion
+                                if(nrofragment==1) {
+                                    System.out.println(" **** ENTROOOOOOOO");
+                                    txt_latitud = (TextView) ubicacionfragment.getView().findViewById(R.id.txt_latitud);
+                                    txt_longitud = (TextView) ubicacionfragment.getView().findViewById(R.id.txt_longitud);
+                                    txt_latitud.setText(String.valueOf(latitud));
+                                    txt_longitud.setText(String.valueOf(longitud));
+                                }
+
                             }
                         });
                     }
@@ -204,26 +226,104 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
         bundle.putString("hora1",ho);
         estadisticasFragment.setArguments(bundle);
     }
+    public void actualizarUbicacion(){
+        Bundle bundle3 = new Bundle();
+        bundle3.putDouble("latitud", latitud);
+        bundle3.putDouble("longitud",longitud);
+        ubicacionfragment.setArguments(bundle3);
+    }
+    public void actualizaCoordenadas(){
 
-    public void ubicacion(){
-        LocationCallback locationCallback = new LocationCallback() {
+        latitud = myLocationService.getLatitud();
+        longitud = myLocationService.getLongitud();
+    }
 
-            @SuppressLint("SetTextI18n")
-            public void onLocationResult(LocationResult locationResult) {
+    private void iniciarRecorrido() {
+        if (ContextCompat.checkSelfPermission(
+                this.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_CODE_LOCATION_PERMISSION);
+        } else {
+            startLocationService();
+        }
+    }
 
-                super.onLocationResult(locationResult);
-                if (locationResult != null && locationResult.getLastLocation() != null){
-                    latitud = locationResult.getLastLocation().getLatitude();
-                    longitud = locationResult.getLastLocation().getLongitude();
-                    Log.d("LOCATION_UPDATE", latitud+ ", "+longitud);
-                    // txt_latitud.setText(""+latitud);
-                    //txt_longitud.setText(""+longitud);
-                    // ESTOOOOOOO QUIERO QUE  ACTUALIZE EN EL .XML DE UBICACION_FRAGMENT, PERO NO ME SALEEEEEEEEE :cccccc
-                    //  mapa(-16.3944068, -71.5021534);
-                    // mapa(latitud, longitud);
+    private void pararRecorrido(){
+        stopLocationService();
+    }
+
+    // Añadidos para la ubicacion
+    private boolean isLocationServiceRunning(){
+        ActivityManager activityManager = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+        if(activityManager != null ){
+            for(ActivityManager.RunningServiceInfo service:
+                    activityManager.getRunningServices(Integer.MAX_VALUE)){
+                if(LocationService.class.getName().equals(service.service.getClassName())){
+                    if(service.foreground){
+                        //
+
+                        return true;
+                    }
                 }
             }
-        };
+            return false;
+        }
+        return false;
+
+    }
+
+    private void startLocationService(){
+        if(!isLocationServiceRunning()) {
+            Intent intent = new Intent(this.getApplicationContext(), LocationService.class);
+            intent.setAction(Constants.ACTION_START_LOCATION_SERVICE);
+            startService(intent);
+
+            //Toast.makeText(this, "Location service started", Toast.LENGTH_SHORT).show();
+
+
+        }else{}
+        //Toast.makeText(this,"Location service is already  started", Toast.LENGTH_SHORT).show();
+    }
+    private void stopLocationService(){
+        if(isLocationServiceRunning()){
+            Intent intent = new Intent(this.getApplicationContext(), LocationService.class);
+            intent.setAction(Constants.ACTION_STOP_LOCATION_SERVICE);
+            this.startService(intent);
+            Toast.makeText(this,"Location service stopped", Toast.LENGTH_SHORT).show();
+
+        }else
+            Toast.makeText(this,"Location service is already stopped", Toast.LENGTH_SHORT).show();
+    }
+
+
+    private ServiceConnection MConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName name, IBinder service) {
+
+            LocationService.LocalService localService = (LocationService.LocalService) service;
+            myLocationService = localService.getService();
+            isBindLocation = true;
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            isBindLocation = false;
+        }
+    };
+    protected void onStop() {
+        super.onStop();
+        if(isBindLocation){
+            unbindService(MConnection);
+            isBindLocation = false;
+        }
+    }
+
+    public double getLati() {
+        return latitud;
+    }
+
+    public double getLongi() {
+        return  longitud;
     }
 
 }
