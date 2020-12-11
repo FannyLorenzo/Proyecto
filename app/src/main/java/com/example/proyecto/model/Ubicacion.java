@@ -19,7 +19,7 @@ public class Ubicacion {
     private DateFormat hora = new SimpleDateFormat("HH:mm:ss");
 
     public Ubicacion(){}
-    public Ubicacion(long latitud, long longitud) {
+    public Ubicacion(double latitud, double longitud) {
         this.latitud = latitud;
         this.longitud = longitud;
         this.tiempoDeRegistro = new Date();

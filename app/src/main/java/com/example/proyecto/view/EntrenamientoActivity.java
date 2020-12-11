@@ -22,10 +22,13 @@ import com.example.proyecto.R;
 import com.example.proyecto.interfaces.IEntrenamiento;
 import com.example.proyecto.model.Constants;
 import com.example.proyecto.model.LocationService;
+import com.example.proyecto.model.Ubicacion;
 import com.example.proyecto.view.fragements.Actividad_Fragment;
 import com.example.proyecto.view.fragements.Estadisticas_Fragment;
 import com.example.proyecto.view.fragements.Mapa_Fragment;
 import com.example.proyecto.view.fragements.Ubicacion_Fragment;
+
+import java.util.ArrayList;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -66,6 +69,9 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
     Double latitud = 1.0;
     Double longitud = 1.0;
     TextView txt_latitud, txt_longitud;
+
+    ArrayList<Ubicacion> recorrido = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,13 +171,9 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                         latitud = myLocationService.getLatitud();
                         longitud = myLocationService.getLongitud();
                         System.out.println("aqui mero Latitud "+ latitud +"/nLongitud "+longitud);
-                        if(nrofragment==1) {
-                            actualizaCoordenadas();
-                            actualizarUbicacion();
-                        }
 
-                        if(seg%5==0){
-                            //aqui guardar en BD datos
+                        if(seg%5==0){ // para crear el arreglo de ubicaciones
+                            recorrido.add(new Ubicacion(latitud,longitud));
                         }
                         h.post(new Runnable() {
                             @Override
@@ -200,7 +202,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                                 hours = (TextView) actividadFragment.getView().findViewById(R.id.hour_TextView);
                                 minutos.setText(m);
                                 hours.setText(ho);
-                                // ubicacion
+                                // ubicacion - actualización de valores en fragment
                                 if(nrofragment==1) {
                                     System.out.println(" **** ENTROOOOOOOO");
                                     txt_latitud = (TextView) ubicacionfragment.getView().findViewById(R.id.txt_latitud);
@@ -211,6 +213,9 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
 
                             }
                         });
+                    }else{//isOn es false / si está pausado etc, esto hay q ver
+                        pararRecorrido(); // le puse para ver no mas
+
                     }
                 }
             }
@@ -226,17 +231,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
         bundle.putString("hora1",ho);
         estadisticasFragment.setArguments(bundle);
     }
-    public void actualizarUbicacion(){
-        Bundle bundle3 = new Bundle();
-        bundle3.putDouble("latitud", latitud);
-        bundle3.putDouble("longitud",longitud);
-        ubicacionfragment.setArguments(bundle3);
-    }
-    public void actualizaCoordenadas(){
 
-        latitud = myLocationService.getLatitud();
-        longitud = myLocationService.getLongitud();
-    }
 
     private void iniciarRecorrido() {
         if (ContextCompat.checkSelfPermission(
@@ -283,19 +278,20 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
             //Toast.makeText(this, "Location service started", Toast.LENGTH_SHORT).show();
 
 
-        }else{}
-        //Toast.makeText(this,"Location service is already  started", Toast.LENGTH_SHORT).show();
-    }
+        }else {
+            //Toast.makeText(this,"Location service is already  started", Toast.LENGTH_SHORT).show();
+        } }
     private void stopLocationService(){
         if(isLocationServiceRunning()){
             Intent intent = new Intent(this.getApplicationContext(), LocationService.class);
             intent.setAction(Constants.ACTION_STOP_LOCATION_SERVICE);
             this.startService(intent);
-            Toast.makeText(this,"Location service stopped", Toast.LENGTH_SHORT).show();
+         //   Toast.makeText(this,"Location service stopped", Toast.LENGTH_SHORT).show();
 
-        }else
-            Toast.makeText(this,"Location service is already stopped", Toast.LENGTH_SHORT).show();
-    }
+        }else {
+            // Toast.makeText(this,"Location service is already stopped", Toast.LENGTH_SHORT).show();
+        }
+        }
 
 
     private ServiceConnection MConnection = new ServiceConnection() {
@@ -312,10 +308,12 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
     };
     protected void onStop() {
         super.onStop();
+        ///**
         if(isBindLocation){
             unbindService(MConnection);
             isBindLocation = false;
         }
+         /**/
     }
 
     public double getLati() {

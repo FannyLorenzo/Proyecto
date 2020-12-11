@@ -49,7 +49,7 @@ public class UbicacionModel implements IUbicacion.model{
     }
 
         public void registerUbicacion(Ubicacion item) throws ParseException {
-        ArrayList<Ubicacion> lista = getUbicaciones();
+
         ContentValues contentValues = new ContentValues();
 
         contentValues.put("latitud", item.getLatitud());
