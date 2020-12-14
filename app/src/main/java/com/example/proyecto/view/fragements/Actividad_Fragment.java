@@ -1,5 +1,6 @@
 package com.example.proyecto.view.fragements;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.database.ContentObserver;
 import android.database.sqlite.SQLiteDatabase;
@@ -44,11 +45,14 @@ public class Actividad_Fragment extends Fragment {
     String seg2=":00",minuts2=":00",hour2="00";
     Handler h = new Handler();
     TextView segs,minutos,hours;
+
+    ProgressDialog progressDialog;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    int x = 0;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -100,6 +104,7 @@ public class Actividad_Fragment extends Fragment {
         minutos.setText(minuts2);
         hours.setText(hour2);
         segs.setText(seg2);
+
         /*if (seg2 == 0 && seg != 0){
 
             if (seg < 10){
@@ -128,7 +133,29 @@ public class Actividad_Fragment extends Fragment {
 
             }
         });
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Cargando datos");
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
+
+
         return view;
+    }
+    public void play(){
+        if (x == 0){
+            progressDialog.show();
+            Handler h = new Handler();
+            h.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    progressDialog.dismiss();
+                    playPause();
+                }
+            },3000);
+            x++;
+        }else{
+            playPause();
+        }
     }
     public void playPause(){
         //setContentView(R.layout.fragment_actividad_);
