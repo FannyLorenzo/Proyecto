@@ -40,6 +40,7 @@ public class Actividad_Fragment extends Fragment {
     View view;
     double control = 0;
     boolean isOn = false;
+    boolean isStop = false;
     Thread thread;
     int seg=0,minuts=0,hour=0;
     String seg2=":00",minuts2=":00",hour2="00";
@@ -129,7 +130,12 @@ public class Actividad_Fragment extends Fragment {
         stopView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                guardarDatos();
+                if(!isStop) {
+
+                    isStop = true;
+                    isOn = false;
+                    guardarDatos();
+                }
 
             }
         });
@@ -179,6 +185,7 @@ public class Actividad_Fragment extends Fragment {
                     }
 
                     isOn = true;
+                    isStop = false;
 
                     switchNumber++;
                 }else {
@@ -248,6 +255,9 @@ public class Actividad_Fragment extends Fragment {
     }
     public boolean getBool(){
         return isOn;
+    }
+    public boolean getIsStop(){
+        return isStop;
     }
     public void setControl(){
         control=control+0.5;

@@ -59,7 +59,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
     int switchNumber = 0;
     View view;
     double control = 0;
-    boolean siempre = true,isOn = false;
+    boolean siempre = true,isOn = false, isStop = false;
     Thread thread;
     int seg=0,minuts=0,hour=0;
     int seg2,minuts2,hour2;
@@ -98,7 +98,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
         // servicio de localización
         Intent serviceIntent = new Intent(this,LocationService.class);
         bindService(serviceIntent, MConnection, Context.BIND_AUTO_CREATE);
-        iniciarRecorrido();
+
 
         //cronometro
         cronometro();
@@ -156,8 +156,9 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
 
                 while (siempre){
                     isOn = actividadFragment.getBool();
+                    isStop = actividadFragment.getIsStop();
 
-                    if(isOn){
+                    if(isOn && !isStop){
 
                         try {
                             Thread.sleep(1000);
@@ -183,7 +184,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                         }
 
                         /// Ubicacion
-
+                        iniciarRecorrido();
                         latitud = myLocationService.getLatitud();
                         longitud = myLocationService.getLongitud();
                         System.out.println("********************aqui mero Latitud "+ latitud +"/nLongitud "+longitud);
@@ -212,7 +213,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                                 }else{
                                     ho = ""+hour;
                                 }
-                               // actualizar();
+
                                 System.out.println(s);
                                 segs = (TextView) actividadFragment.getView().findViewById(R.id.seg_TextView);
                                 segs.setText(s);
@@ -232,22 +233,29 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                             }
                         });
                     }else{//isOn es false / si está pausado etc, esto hay q ver
-                        //pararRecorrido(); // le puse para ver no mas
+                        pararRecorrido(); // le puse para ver no mas
+                        if(isStop){
+                            h.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    seg=0;minuts=0;hour=0;
+                                    s = ":00";
+                                    m = ":00";
+                                    ho = "00";
+                                    segs = (TextView) actividadFragment.getView().findViewById(R.id.seg_TextView);
+                                    segs.setText(s);
+                                    minutos = (TextView) actividadFragment.getView().findViewById(R.id.minut_TextView);
+                                    hours = (TextView) actividadFragment.getView().findViewById(R.id.hour_TextView);
+                                    minutos.setText(m);
+                                    hours.setText(ho);
+                                }});
+                        }
 
                     }
                 }
             }
         });
         thread.start();
-    }
-
-    public void actualizar(){
-
-        Bundle bundle = new Bundle();
-        bundle.putString("segundo1",s);
-        bundle.putString("minuto1",m);
-        bundle.putString("hora1",ho);
-        estadisticasFragment.setArguments(bundle);
     }
 
 
@@ -324,6 +332,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
             isBindLocation = false;
         }
     };
+
     /*protected void onStop() {
         super.onStop();
         ///**
@@ -395,6 +404,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                 unbindService(MConnection);
                 isBindLocation = false;
                 finish();
+                pararRecorrido(); // agregado por FL
             }
         });
     }
