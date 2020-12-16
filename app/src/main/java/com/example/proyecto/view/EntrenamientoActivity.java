@@ -357,9 +357,9 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
         double a = haversin(dLat) + Math.cos(startLat) * Math.cos(endLat) * haversin(dLong);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-        distanciaTotal = distanciaTotal+EARTH_RADIUS * c;
+        distanciaTotal = distanciaTotal+EARTH_RADIUS * c*(double)1000;
         System.out.println("********************///"+distanciaTotal);
-        return EARTH_RADIUS * c; // <-- d
+        return EARTH_RADIUS * c*(double)1000; // <-- d
     }
 
     public static double haversin(double val) {
@@ -397,5 +397,45 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                 finish();
             }
         });
+    }
+
+    public void calorias(){
+        double dist = distancia();
+        double MET = 0;
+        dist = dist*1000;
+        double velocidad = dist/(double)5;
+        velocidad = velocidad*(double)3600/(double)1000;
+        if (velocidad >=0 && velocidad <= 1.5){
+            MET = 1;
+        }else if(velocidad >1.5 && velocidad <=2.5){
+            MET = 1.5;
+        }else if (velocidad > 2.5 && velocidad < 3){
+            MET = 2;
+        }else if(velocidad >= 3 && velocidad <= 4.5){
+            MET = 3.3;
+        }else if(velocidad > 4.5 && velocidad <= 5.3){
+            MET = 3.8;
+        }else if (velocidad > 5.3 && velocidad <6.4){
+            MET = 4;
+        }else if (velocidad >= 6.4 && velocidad < 8.4){
+            MET = 5;
+        }else if(velocidad >= 8.4 && velocidad <9.6){
+            MET = 9;
+        }else if (velocidad >= 9.6 && velocidad <10.8){
+            MET = 10;
+        }else if (velocidad >= 10.8 && velocidad < 11.3){
+            MET = 11;
+        }else if (velocidad >= 11.3 && velocidad < 12.1){
+            MET = 11.5;
+        }else if (velocidad >= 12.1 && velocidad < 12.9){
+            MET = 12.5;
+        }else if (velocidad >= 12.9 && velocidad < 13.8){
+            MET = 13.5;
+        }else if (velocidad >= 13.8 && velocidad < 14.5){
+            MET = 14;
+        }else{
+            MET = 16.5;
+        }
+
     }
 }

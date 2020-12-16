@@ -46,8 +46,6 @@ public class Actividad_Fragment extends Fragment {
     Handler h = new Handler();
     TextView segs,minutos,hours;
 
-    ProgressDialog progressDialog;
-
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -133,30 +131,12 @@ public class Actividad_Fragment extends Fragment {
 
             }
         });
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("Cargando datos");
-        progressDialog.setIndeterminate(true);
-        progressDialog.setCancelable(false);
+
 
 
         return view;
     }
-    public void play(){
-        if (x == 0){
-            progressDialog.show();
-            Handler h = new Handler();
-            h.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    progressDialog.dismiss();
-                    playPause();
-                }
-            },3000);
-            x++;
-        }else{
-            playPause();
-        }
-    }
+
     public void playPause(){
         //setContentView(R.layout.fragment_actividad_);
         //ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_actividad_,container,null);
