@@ -61,6 +61,7 @@ public class LocationService extends Service {
                 latitud = locationResult.getLastLocation().getLatitude();
                 longitud = locationResult.getLastLocation().getLongitude();
                 Log.d("LOCATION_UPDATE", latitud+ ", "+longitud);
+                //locationResult.getLocations();
 
             }
         }
