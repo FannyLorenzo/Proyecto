@@ -519,7 +519,7 @@ public class PlayerActivity extends AppCompatActivity
         musicService = null;
     }
 
-    /****************************notificacion de reproduccion***************************/
+    /****************************notificacion de reproduccion******************************/
     void showNotification(int playPauseBtn){
         Intent intent = new Intent(this, PlayerActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
