@@ -26,9 +26,10 @@ public class Estadisticas_Fragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    int seg=0,minut=0,hour=0;
+    int minut=0;
+    double cals=0.0,dist=0.0;
     View view;
-    TextView segs,minutos,hours;
+    TextView cal,minutos,dists;
 
 
     public Estadisticas_Fragment() {
@@ -59,9 +60,9 @@ public class Estadisticas_Fragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
-            seg = getArguments().getInt("segundo1",0);
+            cals = getArguments().getDouble("cals",0.0);
             minut = getArguments().getInt("minuto1",0);
-            hour = getArguments().getInt("hora1",0);
+            dist = getArguments().getDouble("dist",0.0);
         }
     }
 
@@ -72,20 +73,20 @@ public class Estadisticas_Fragment extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_estadisticas_,container,false);
         minutos = (TextView) view.findViewById(R.id.textView4);
+        cal = (TextView) view.findViewById(R.id.cal_est);
+        dists = (TextView) view.findViewById(R.id.dist_est);
+
         minutos.setText(String.valueOf(minut));
+        cal.setText(String.valueOf(cals));
+        dists.setText(String.valueOf(dist));
         return view;
     }
 
     public View getView(){
         return view;
     }
-    public int getSeg(){
-        return seg;
-    }
+
     public int getMinut(){
         return minut;
-    }
-    public int getHour(){
-        return hour;
     }
 }

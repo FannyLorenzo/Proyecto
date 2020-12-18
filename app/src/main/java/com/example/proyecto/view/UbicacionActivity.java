@@ -28,6 +28,9 @@ import com.example.proyecto.presenter.PermisosPresenter;
 import com.example.proyecto.presenter.UbicacionPresenter;
 import com.example.proyecto.presenter.UsuarioPresentador;
 import com.example.proyecto.view.fragements.Mapa_Fragment;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 public class UbicacionActivity extends AppCompatActivity implements IUbicacion.view {
     private static final int REQUEST_PERMISSION_UBICACION = 111;
@@ -36,18 +39,40 @@ public class UbicacionActivity extends AppCompatActivity implements IUbicacion.v
     private TextView txt_longitud;
     private TextView txt_direccion;
     private UbicacionPresenter presenter;
+    double lat, lon;
+    int wa = 0;
+    private FusedLocationProviderClient fusedLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ubicacion);
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
         btn_GPS = findViewById(R.id.btn_UbicacionActual);
         txt_latitud = findViewById(R.id.txt_latitud);
         txt_longitud = findViewById(R.id.txt_longitud);
         txt_direccion = findViewById(R.id.txt_direccion);
-
-       presenter= new UbicacionPresenter(this); /// AQUIIIIIII
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+        }
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            lat = location.getLatitude();
+                            lon = location.getLongitude();
+                            System.out.println(" ****** " + lat + " - " + lon + " waaaa* " +wa);
+                            wa++;
+                            System.out.println(" ****** " +" waaaa* " +wa);
+                            txt_latitud.setText(lat + " ok ");
+                            txt_longitud.setText(lon + " ok ");
+                        }
+                    }
+                });
+        presenter = new UbicacionPresenter(this); /// AQUIIIIIII
         btn_GPS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,12 +87,13 @@ public class UbicacionActivity extends AppCompatActivity implements IUbicacion.v
                         txt_latitud.setText("" + location.getLatitude());
                         txt_longitud.setText("" + location.getLongitude());
                         txt_direccion.setText("speed: " + location.getSpeed() + "time: " + "/n" +
-                                location.getTime() + "realtime: " +  "/n" +
+                                location.getTime() + "realtime: " + "/n" +
                                 location.getElapsedRealtimeNanos());
 
                         mapa(location.getLatitude(), location.getLongitude());
                         // Aqui guardar objeto UbicacionModel con SQLite
-                        Log.d("LOCATION_UPDATE", location.getLatitude()+ ", "+location.getLongitude());
+                        Log.d("LOCATION_UPDATE", location.getLatitude() + ", " + location.getLongitude());
+
 
 
                     }
@@ -91,14 +117,16 @@ public class UbicacionActivity extends AppCompatActivity implements IUbicacion.v
                 presenter.solicitarPermisosUbicacion();
                 int permissionCheck = ContextCompat.checkSelfPermission(UbicacionActivity.this, Manifest.permission.ACCESS_FINE_LOCATION);
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-
-            }
+       }
         });
 
         int permissionCheck = ContextCompat.checkSelfPermission(UbicacionActivity.this, Manifest.permission.ACCESS_FINE_LOCATION);
 
 
     }
+
+
+
 
     @Override
     public void showRegisterError(String error_en_el_registro) {
@@ -110,7 +138,7 @@ public class UbicacionActivity extends AppCompatActivity implements IUbicacion.v
 
     }
 
-    
+
     @Override
     public void showRequiredUbicacion() {
         requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSION_UBICACION);
@@ -131,5 +159,7 @@ public class UbicacionActivity extends AppCompatActivity implements IUbicacion.v
         fragmentTransaction.add(R.id.map, fragment, null);
         fragmentTransaction.commit();
     }
+
+
 
 }

@@ -1,5 +1,6 @@
 package com.example.proyecto.view.fragements;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.database.ContentObserver;
 import android.database.sqlite.SQLiteDatabase;
@@ -39,16 +40,20 @@ public class Actividad_Fragment extends Fragment {
     View view;
     double control = 0;
     boolean isOn = false;
+    boolean isStop = false;
+    boolean detener = false;
     Thread thread;
     int seg=0,minuts=0,hour=0;
     String seg2=":00",minuts2=":00",hour2="00";
+    String tiempo, distancia, velocidad, calorias;
     Handler h = new Handler();
     TextView segs,minutos,hours;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    int x = 0;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -86,6 +91,7 @@ public class Actividad_Fragment extends Fragment {
             seg2 = getArguments().getString("segundo1", ":00");
             minuts2 = getArguments().getString("minuto1", ":00");
             hour2 = getArguments().getString("hora1", "00");
+            //tiempo = getArguments().getString()
         }
     }
 
@@ -100,36 +106,43 @@ public class Actividad_Fragment extends Fragment {
         minutos.setText(minuts2);
         hours.setText(hour2);
         segs.setText(seg2);
-        /*if (seg2 == 0 && seg != 0){
 
-            if (seg < 10){
-                segs.setText(":0"+String.valueOf(seg));
-            }else{
-                segs.setText(":"+seg);
+
+        imageView = (ImageView) view.findViewById(R.id.play_pause);
+        if (isOn){
+            imageView.setImageDrawable(getResources().getDrawable(R.drawable.avd_play_to_pause));
+            Drawable drawable = imageView.getDrawable();
+
+            if (drawable instanceof AnimatedVectorDrawableCompat){
+                avd = (AnimatedVectorDrawableCompat) drawable;
+                avd.start();
+            }else if (drawable instanceof AnimatedVectorDrawable){
+                avd2 = (AnimatedVectorDrawable) drawable;
+                avd2.start();
             }
-        }else{
-            seg = seg2;
-            if (seg < 10){
-                segs.setText(":0"+String.valueOf(seg));
-            }else{
-                segs.setText(":"+seg);
-            }
+            switchNumber++;
         }
-        minutos.setText(":0"+minuts2);*/
 
         playPause();
-        //cronometro();
 
         stopView = (ImageView) view.findViewById(R.id.stop);
         stopView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                guardarDatos();
-
+                if(!isStop) {
+                    System.out.println("*********P/PARAR2");
+                    isStop = true;
+                    isOn = false;
+                    //guardarDatos();
+                }
             }
         });
+
+
+
         return view;
     }
+
     public void playPause(){
         //setContentView(R.layout.fragment_actividad_);
         //ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_actividad_,container,null);
@@ -150,8 +163,9 @@ public class Actividad_Fragment extends Fragment {
                         avd2 = (AnimatedVectorDrawable) drawable;
                         avd2.start();
                     }
-
+                    System.out.println("*****************/INICIO");
                     isOn = true;
+                    isStop = false;
 
                     switchNumber++;
                 }else {
@@ -219,8 +233,17 @@ public class Actividad_Fragment extends Fragment {
             switchNumber--;
         }
     }
+    public void setNumber(){
+        switchNumber--;
+    }
+    public int getNumber(){
+        return  switchNumber;
+    }
     public boolean getBool(){
         return isOn;
+    }
+    public boolean getIsStop(){
+        return isStop;
     }
     public void setControl(){
         control=control+0.5;
@@ -228,5 +251,18 @@ public class Actividad_Fragment extends Fragment {
 
     public View getView(){
         return view;
+    }
+
+    public void setTiempo(String tiempo){
+        this.tiempo = tiempo;
+    }
+    public void setDistancia(String distancia){
+        this.distancia = distancia;
+    }
+    public void setVelocidad(String velocidad){
+        this.velocidad = velocidad;
+    }
+    public void setCalorias(String calorias){
+        this.calorias = calorias;
     }
 }

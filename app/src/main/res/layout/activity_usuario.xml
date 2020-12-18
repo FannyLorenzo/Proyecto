@@ -18,7 +18,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/perfildefault"
-        tools:srcCompat="@drawable/perfildefault" />
+        tools:srcCompat="@drawable/perfildefault"
+        android:contentDescription="TODO" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -50,10 +51,10 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.516"
+        app:layout_constraintHorizontal_bias="0.483"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2"
+        app:layout_constraintVertical_bias="0.157"
         app:srcCompat="@drawable/bg_perfil_3" />
 
     <Button
@@ -66,12 +67,12 @@
         android:elegantTextHeight="false"
         android:hapticFeedbackEnabled="false"
         android:text="Acerca de mí"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.141"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.672" />
+        app:layout_constraintHorizontal_bias="0.102"
+        app:layout_constraintStart_toStartOf="@+id/imageView2"
+        app:layout_constraintTop_toTopOf="@+id/imageView2"
+        app:layout_constraintVertical_bias="0.494" />
 
     <Button
         android:id="@+id/btn_rutina"
@@ -81,10 +82,12 @@
         android:background="@android:color/transparent"
         android:drawableTop="@drawable/icon_perfil_rutina"
         android:text="Rutina"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_acerca_mi"
+        app:layout_constraintEnd_toEndOf="@+id/imageView2"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/btn_acerca_mi"
-        app:layout_constraintTop_toTopOf="@+id/imageUsuario"
-        app:layout_constraintVertical_bias="0.679" />
+        app:layout_constraintTop_toTopOf="@+id/btn_acerca_mi"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/btn_fotografia"
@@ -93,26 +96,26 @@
         android:background="@android:color/transparent"
         android:drawableTop="@drawable/icon_perfil_fotografia"
         android:text="Fotografías"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.352"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_rutina"
+        app:layout_constraintEnd_toEndOf="@+id/imageView2"
         app:layout_constraintStart_toEndOf="@+id/btn_rutina"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.672" />
+        app:layout_constraintTop_toTopOf="@+id/btn_rutina" />
 
     <TextView
         android:id="@+id/txtNameUsusario"
         android:layout_width="229dp"
         android:layout_height="63dp"
+        android:layout_marginTop="20dp"
+        android:paddingLeft="20dp"
         android:text="Usuario"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.087"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.462" />
+        app:layout_constraintBottom_toBottomOf="@+id/imageUsuario"
+        app:layout_constraintEnd_toStartOf="@+id/btnCerrarSesion"
+        app:layout_constraintHorizontal_bias="0.628"
+        app:layout_constraintStart_toStartOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.629" />
 
     <TextView
         android:id="@+id/txtNameUsusario2"
@@ -123,10 +126,10 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.828"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.828" />
+        app:layout_constraintHorizontal_bias="0.425"
+        app:layout_constraintStart_toEndOf="@+id/imageUsuario2"
+        app:layout_constraintTop_toTopOf="@+id/imageView5"
+        app:layout_constraintVertical_bias="0.13" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageUsuario2"
@@ -137,10 +140,10 @@
         app:civ_border_width="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.149"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.852" />
+        app:layout_constraintHorizontal_bias="0.132"
+        app:layout_constraintStart_toStartOf="@+id/imageView5"
+        app:layout_constraintTop_toTopOf="@+id/imageView5"
+        app:layout_constraintVertical_bias="0.155" />
 
     <Button
         android:id="@+id/btnCerrarSesion"
@@ -149,24 +152,22 @@
         android:backgroundTint="#5B4681"
         android:text="Cerrar sesión"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/txtNameUsusario"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.907"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.468" />
+        app:layout_constraintTop_toTopOf="@+id/txtNameUsusario" />
 
     <TextView
         android:id="@+id/textEmailUsuario"
         android:layout_width="228dp"
         android:layout_height="39dp"
+        android:paddingLeft="20dp"
         android:text="Email"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.142"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.537" />
+        app:layout_constraintEnd_toEndOf="@+id/txtNameUsusario"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/txtNameUsusario"
+        app:layout_constraintTop_toBottomOf="@+id/txtNameUsusario" />
 
     <TextView
         android:id="@+id/textEmailUsuario2"
@@ -174,12 +175,12 @@
         android:layout_height="22dp"
         android:text="Email"
         android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.714"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.857" />
+        app:layout_constraintBottom_toBottomOf="@+id/imageView5"
+        app:layout_constraintEnd_toEndOf="@+id/imageView5"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/txtNameUsusario2"
+        app:layout_constraintTop_toBottomOf="@+id/txtNameUsusario2"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageButton
         android:id="@+id/imgbtn_atras"
@@ -200,11 +201,10 @@
         android:id="@+id/textView10"
         android:layout_width="288dp"
         android:layout_height="69dp"
-        android:layout_marginBottom="16dp"
         android:text="La motivación es lo que te pone en marcha, y el hábito es lo que hace que sigas. Tan solo juega, diviértete, disfruta del juego."
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/imageView5"
+        app:layout_constraintEnd_toEndOf="@+id/imageView5"
+        app:layout_constraintStart_toStartOf="@+id/imageView5"
+        app:layout_constraintTop_toBottomOf="@+id/textEmailUsuario2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

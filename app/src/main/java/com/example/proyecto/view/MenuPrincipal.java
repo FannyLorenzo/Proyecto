@@ -55,7 +55,8 @@ public class MenuPrincipal extends AppCompatActivity {
         txt_entrenamiento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MenuPrincipal.this, EntrenamientoActivity.class)); //
+                startActivity(new Intent(MenuPrincipal.this, EntrenamientoActivity.class));
+                //
             }
         });
 
@@ -73,7 +74,7 @@ public class MenuPrincipal extends AppCompatActivity {
         txt_programar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //startActivity(new Intent(MenuPrincipal.this, LALALLALA.class)); // COMPLETAR CUANDO SE TENGA EL ACTIVITY
+                startActivity(new Intent(MenuPrincipal.this, EntrenamientoHistorial.class)); // COMPLETAR CUANDO SE TENGA EL ACTIVITY
             }
         });
 
