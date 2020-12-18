@@ -310,6 +310,8 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                                              actividadFragment.setNumber();
                                          }
 
+                                         takePhoto();
+
                                     }
                                 });
                                 //detener = actividadFragment.getBool();
@@ -531,6 +533,23 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                  // agregado por FL
             }
         });
+
+    }
+
+    private void takePhoto(){
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle("Sonrie :D")
+                .setMessage("¿Quisieras tomarte una foto?")
+                .setPositiveButton("Si", null)
+                .setNegativeButton("No", null)
+                .show();
+        Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(EntrenamientoActivity.this, CamaraActivity.class));
+            }
+        });
     }
 
     public void calorias(){
@@ -607,6 +626,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
         {
             @Override
             public void onClick(View v) {
+                finish();
                 d.dismiss(); // dismiss the dialog
             }
         });
