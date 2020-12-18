@@ -6,13 +6,15 @@ public class MusicFiles {
     private String artist;
     private String album;
     private String duration;
+    private String id;
 
-    public MusicFiles(String path, String tittle, String artist, String album, String duration) {
+    public MusicFiles(String path, String tittle, String artist, String album, String duration, String id) {
         this.path = path;
         this.tittle = tittle;
         this.artist = artist;
         this.album = album;
         this.duration = duration;
+        this.id = id;
     }
 
     public MusicFiles() {
@@ -57,4 +59,8 @@ public class MusicFiles {
     public void setDuration(String duration) {
         this.duration = duration;
     }
+
+    public String getId() { return id;}
+
+    public void setId(String id) { this.id = id; }
 }

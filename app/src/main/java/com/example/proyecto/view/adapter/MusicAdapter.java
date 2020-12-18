@@ -1,14 +1,20 @@
 package com.example.proyecto.view.adapter;
 import com.bumptech.glide.Glide;
+
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,7 +23,9 @@ import com.bumptech.glide.Glide;
 import com.example.proyecto.R;
 import com.example.proyecto.model.MusicFiles;
 import com.example.proyecto.view.PlayerActivity;
+import com.google.android.material.snackbar.Snackbar;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyVieHolder>{
@@ -58,6 +66,58 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyVieHolder>
                 mContext.startActivity(intent);
             }
         });
+        /*****************eliminar Cancion*****************************/
+        boolean confirmation = false;
+        holder.menuMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popupMenu = new PopupMenu(mContext, v);
+                popupMenu.getMenuInflater().inflate(R.menu.popup, popupMenu.getMenu());
+                popupMenu.show();
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()){
+                            case R.id.delete:
+                                deleteFile(position, v, confirmation);
+                                if (confirmation==true){
+                                    Toast.makeText(mContext, "Canción Eliminada", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    Toast.makeText(mContext, "La cancion no se puede eliminar", Toast.LENGTH_SHORT).show();
+                                }
+                                break;
+                        }
+                        return true;
+                    }
+                });
+            }
+        });
+    }
+
+    /****************Eliminar Cancion******************************/
+    private void deleteFile(int position, View v, Boolean confirmation){
+        Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                Long.parseLong(mFiles.get(position).getId()));
+
+        File file = new File(mFiles.get(position).getPath());
+        boolean deleted = file.delete();
+        //eliminar la canción
+        if (deleted) {
+            mContext.getContentResolver().delete(contentUri, null, null);
+            mFiles.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, mFiles.size());
+            Snackbar.make(v, "Pista eliminada ", Snackbar.LENGTH_LONG)
+                    .show();
+            confirmation=true;
+        }
+        else {
+            //si esque la cancion esta en la targeta sd
+            Snackbar.make(v, "No puede eliminar esta pista ", Snackbar.LENGTH_LONG)
+                    .show();
+            confirmation=false;
+        }
     }
 
     @Override
@@ -65,14 +125,14 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyVieHolder>
         return mFiles.size();
     }
 
-
     public class MyVieHolder extends RecyclerView.ViewHolder{
         TextView file_name;
-        ImageView album_art;
+        ImageView album_art, menuMore;
         public MyVieHolder(@NonNull View itemView) {
             super(itemView);
             file_name = itemView.findViewById(R.id.music_file_name);
             album_art = itemView.findViewById(R.id.music_img);
+            menuMore = itemView.findViewById(R.id.menuMore);
         }
     }
 

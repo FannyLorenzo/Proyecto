@@ -5,10 +5,14 @@ import java.util.ArrayList;
 
 public interface IAudio {
     interface view{
-        void runtimePermission();
-        ArrayList<File> findSong(File file);
-        void display();
+        void btn_play_pauseClicked();
+        void btn_prevClicked();
+        void btn_nextClicked();
     }
     interface presenter{}
-    interface model{}
+    interface model{
+        void btn_play_pauseClicked();
+        void btn_prevClicked();
+        void btn_nextClicked();
+    }
 }
