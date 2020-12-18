@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimatedVectorDrawable;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -31,9 +32,14 @@ import com.example.proyecto.view.fragements.Estadisticas_Fragment;
 import com.example.proyecto.view.fragements.Mapa_Fragment;
 import com.example.proyecto.view.fragements.Ubicacion_Fragment;
 import com.google.android.gms.common.util.concurrent.HandlerExecutor;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -41,9 +47,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
-public class EntrenamientoActivity extends AppCompatActivity implements IEntrenamiento.view{
+public class EntrenamientoActivity extends AppCompatActivity implements IEntrenamiento.view {
 
-    private  static final int REQUEST_CODE_LOCATION_PERMISSION=1;
+    private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
     private static final int EARTH_RADIUS = 6371;
     Actividad_Fragment actividadFragment;
     Estadisticas_Fragment estadisticasFragment;
@@ -59,24 +65,25 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
     int switchNumber = 0;
     View view;
     double control = 0;
-    boolean siempre = true,isOn = false, isStop = false;
+    boolean siempre = true, isOn = false, isStop = false;
     Thread thread;
-    int seg=0,minuts=0,hour=0;
-    int seg2,minuts2,hour2;
+    int seg = 0, minuts = 0, hour = 0;
+    int seg2, minuts2, hour2;
     Handler h = new Handler();
-    TextView segs,minutos,hours,estadist_minuts;
-    String s = ":00",m =":00", ho="00";
+    TextView segs, minutos, hours, estadist_minuts;
+    String s = ":00", m = ":00", ho = "00";
     Double distanciaTotal = 0.0;
     // ubicacion
-    int nrofragment=0;
+    int nrofragment = 0;
     LocationService myLocationService;
     boolean isBindLocation = false;
     Double latitud = 1.0;
     Double longitud = 1.0;
     TextView txt_latitud, txt_longitud;
+    boolean isSecure =false;
 
     ArrayList<Ubicacion> recorrido = new ArrayList<>();
-
+    private FusedLocationProviderClient fusedLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,9 +91,9 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
         setContentView(R.layout.activity_entrenamiento);
 
         // Inicialización de botones a fragments
-        actividad = (Button)findViewById(R.id.actividad_fragmentButton);
-        mapa = (Button)findViewById(R.id.mapa_fragmentButton);
-        estadisticas = (Button)findViewById(R.id.estadisticas_fragmentButton);
+        actividad = (Button) findViewById(R.id.actividad_fragmentButton);
+        mapa = (Button) findViewById(R.id.mapa_fragmentButton);
+        estadisticas = (Button) findViewById(R.id.estadisticas_fragmentButton);
 
         // Inicialización de fragments
         actividadFragment = new Actividad_Fragment();
@@ -96,18 +103,24 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
         //music_fragment = new Music_Fragment();
 
         // servicio de localización
-        Intent serviceIntent = new Intent(this,LocationService.class);
+        Intent serviceIntent = new Intent(this, LocationService.class);
         bindService(serviceIntent, MConnection, Context.BIND_AUTO_CREATE);
+        // ubicacion inicial
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-
+       // if(nrofragment==1) {
+         //   txt_latitud.setText(latitud + " (inicial)");
+          //  txt_longitud.setText(longitud + " (inicial)");
+        //} obtenerUbicacionInicial();
         //cronometro
+        obtenerUbicacionInicial();
         cronometro();
-        getSupportFragmentManager().beginTransaction().add(R.id.activity_fragment,actividadFragment).commit();
-        getSupportFragmentManager().beginTransaction().add(R.id.activity_fragment,estadisticasFragment);
-
+        getSupportFragmentManager().beginTransaction().add(R.id.activity_fragment, actividadFragment).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.activity_fragment, estadisticasFragment);
 
 
     }
+
 
     // Cambios entre los fragments
     @SuppressLint("NonConstantResourceId")
@@ -158,7 +171,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                     isOn = actividadFragment.getBool();
                     isStop = actividadFragment.getIsStop();
 
-                    if(isOn && !isStop){
+                    if(isOn && !isStop && isSecure){
 
                         try {
                             Thread.sleep(1000);
@@ -166,12 +179,11 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                             e.printStackTrace();
                         }
 
-                        if (seg == 1 && minuts == 0 && hour == 0){
-                            System.out.println("*******************//"+distanciaTotal);
-                            latitud = myLocationService.getLatitud();
-                            longitud = myLocationService.getLongitud();
-                            recorrido.add(new Ubicacion(latitud,longitud));
-                        }
+                        /// Ubicacion
+                        iniciarRecorrido();
+                        latitud = myLocationService.getLatitud();
+                        longitud = myLocationService.getLongitud();
+
                         seg = seg +1-(int) control;
                         if (seg == 60){
                             minuts++;
@@ -183,15 +195,10 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                             minuts = 0;
                         }
 
-                        /// Ubicacion
-                        iniciarRecorrido();
-                        latitud = myLocationService.getLatitud();
-                        longitud = myLocationService.getLongitud();
-                        System.out.println("********************aqui mero Latitud "+ latitud +"/nLongitud "+longitud);
-
 
                         if(seg%5==0){ // para crear el arreglo de ubicaciones
                             recorrido.add(new Ubicacion(latitud,longitud));
+                            System.out.println("********************agregados "+recorrido.size()+ " --> "+ latitud +"/nLongitud "+longitud);
                             System.out.println("********************"+distancia());
                         }
                         h.post(new Runnable() {
@@ -221,13 +228,17 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                                 hours = (TextView) actividadFragment.getView().findViewById(R.id.hour_TextView);
                                 minutos.setText(m);
                                 hours.setText(ho);
-                                // ubicacion - actualización de valores en fragment
+                                // ubicacion - actualización de valores en fragment Ubicacion
                                 if(nrofragment==1) {
-                                    System.out.println(" **** ENTROOOOOOOO");
+                                    System.out.println(" **** actualizando en fragment ubicacion");
                                     txt_latitud = (TextView) ubicacionfragment.getView().findViewById(R.id.txt_latitud);
                                     txt_longitud = (TextView) ubicacionfragment.getView().findViewById(R.id.txt_longitud);
                                     txt_latitud.setText(String.valueOf(latitud));
                                     txt_longitud.setText(String.valueOf(longitud));
+                                }
+                                if(nrofragment==2) {
+                                    System.out.println(" **** actualizando en fragment estadisticas");
+
                                 }
 
                             }
@@ -249,6 +260,9 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                                     minutos.setText(m);
                                     hours.setText(ho);
                                 }});
+                            // reseteando array de recorrido una vez es STOP
+                            recorrido = new ArrayList<Ubicacion>();
+                            isOn = false;
                         }
 
                     }
@@ -352,8 +366,8 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
     }
 
     public double distancia() {
-        double startLat = recorrido.get(recorrido.size()-2).getLatitud();
-        double startLong = recorrido.get(recorrido.size()-2).getLongitud();
+        double startLat = recorrido.get(recorrido.size()-1).getLatitud();
+        double startLong = recorrido.get(recorrido.size()-1).getLongitud();
         double endLat = recorrido.get(recorrido.size()-1).getLatitud();
         double endLong = recorrido.get(recorrido.size()-1).getLongitud();
 
@@ -408,4 +422,33 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
             }
         });
     }
+    private void obtenerUbicacionInicial() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, Constants.REQUEST_PERMISSION_UBICACION);
+            return;
+        }
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            latitud = location.getLatitude();
+                            longitud = location.getLongitude();
+                            System.out.println(" LATITUDES INICIALES " + latitud + " - " + longitud);
+                            // txt_latitud = (TextView) ubicacionfragment.getView().findViewById(R.id.txt_latitud);
+                            //txt_longitud = (TextView) ubicacionfragment.getView().findViewById(R.id.txt_longitud);
+                            isSecure=true;
+
+                        }
+                    }
+                }).addOnFailureListener(this, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                System.out.println("Aqui hay un problema, no funcionó el fusedlocation");
+            }
+        });
+
+    }
+
 }
