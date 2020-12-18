@@ -383,7 +383,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
     }
 
 
-    private void iniciarRecorrido() {
+    public void iniciarRecorrido() {
         if (ContextCompat.checkSelfPermission(
                 this.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION
         ) != PackageManager.PERMISSION_GRANTED) {
@@ -395,12 +395,12 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
         }
     }
 
-    private void pararRecorrido(){
+    public void pararRecorrido(){
         stopLocationService();
     }
 
     // Añadidos para la ubicacion
-    private boolean isLocationServiceRunning(){
+    public boolean isLocationServiceRunning(){
         ActivityManager activityManager = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
         if(activityManager != null ){
             for(ActivityManager.RunningServiceInfo service:
@@ -419,7 +419,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
 
     }
 
-    private void startLocationService(){
+    public void startLocationService(){
         if(!isLocationServiceRunning()) {
             Intent intent = new Intent(this.getApplicationContext(), LocationService.class);
             intent.setAction(Constants.ACTION_START_LOCATION_SERVICE);
@@ -431,7 +431,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
         }else {
             //Toast.makeText(this,"Location service is already  started", Toast.LENGTH_SHORT).show();
         } }
-    private void stopLocationService(){
+    public void stopLocationService(){
         if(isLocationServiceRunning()){
             Intent intent = new Intent(this.getApplicationContext(), LocationService.class);
             intent.setAction(Constants.ACTION_STOP_LOCATION_SERVICE);
@@ -536,7 +536,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
 
     }
 
-    private void takePhoto(){
+    public void takePhoto(){
         AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setTitle("Sonrie :D")
                 .setMessage("¿Quisieras tomarte una foto?")
@@ -672,7 +672,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
 
 
     }
-    private void obtenerUbicacionInicial() {
+    public void obtenerUbicacionInicial() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, Constants.REQUEST_PERMISSION_UBICACION);
             return;

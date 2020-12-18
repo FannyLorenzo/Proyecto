@@ -8,4 +8,6 @@ public class EntrenamientoPresenter implements IEntrenamiento.presenter{
     public EntrenamientoPresenter (IEntrenamiento.view view){
         this.view = view;
     }
+
+
 }

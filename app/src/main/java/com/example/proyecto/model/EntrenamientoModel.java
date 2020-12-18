@@ -1,4 +1,7 @@
 package com.example.proyecto.model;
 
-public class EntrenamientoModel {
+import com.example.proyecto.interfaces.IEntrenamiento;
+
+public class EntrenamientoModel implements IEntrenamiento.model {
+
 }
