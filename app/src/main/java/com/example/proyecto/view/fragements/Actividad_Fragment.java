@@ -41,6 +41,7 @@ public class Actividad_Fragment extends Fragment {
     double control = 0;
     boolean isOn = false;
     boolean isStop = false;
+    boolean detener = false;
     Thread thread;
     int seg=0,minuts=0,hour=0;
     String seg2=":00",minuts2=":00",hour2="00";
@@ -119,6 +120,7 @@ public class Actividad_Fragment extends Fragment {
                 avd2 = (AnimatedVectorDrawable) drawable;
                 avd2.start();
             }
+            switchNumber++;
         }
 
         playPause();
@@ -133,7 +135,6 @@ public class Actividad_Fragment extends Fragment {
                     isOn = false;
                     //guardarDatos();
                 }
-
             }
         });
 
@@ -162,7 +163,7 @@ public class Actividad_Fragment extends Fragment {
                         avd2 = (AnimatedVectorDrawable) drawable;
                         avd2.start();
                     }
-
+                    System.out.println("*****************/INICIO");
                     isOn = true;
                     isStop = false;
 
@@ -231,6 +232,12 @@ public class Actividad_Fragment extends Fragment {
         if (switchNumber == 1){
             switchNumber--;
         }
+    }
+    public void setNumber(){
+        switchNumber--;
+    }
+    public int getNumber(){
+        return  switchNumber;
     }
     public boolean getBool(){
         return isOn;

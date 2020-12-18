@@ -36,8 +36,13 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity implements IUsuario.view {
 
@@ -50,6 +55,7 @@ public class LoginActivity extends AppCompatActivity implements IUsuario.view {
 
     // variable para gestionar FirebaseAuth
     private FirebaseAuth mAuth;
+    private DatabaseReference dataBase;
     // agregar cliente de inicio de sesión con Google
     private GoogleSignInClient mGoogleSignInClient;
     // Fuente: https://youtu.be/2CP54Jio0zE
@@ -85,6 +91,7 @@ public class LoginActivity extends AppCompatActivity implements IUsuario.view {
 
         // inicializar Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        dataBase = FirebaseDatabase.getInstance().getReference();
 
         btnIngresar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,6 +152,25 @@ public class LoginActivity extends AppCompatActivity implements IUsuario.view {
 
                             // Guardar el proveedor "Google" en shared preferences
                             session.setProvider("Facebook");
+
+                            // Map
+                            FirebaseUser currentUser = mAuth.getCurrentUser();
+
+                            Map<String, Object> map = new HashMap<>();
+                            map.put("name", currentUser.getDisplayName());
+                            map.put("email", currentUser.getEmail());
+
+                            // variables de id
+                            String id = Objects.requireNonNull(currentUser).getUid();
+
+                            // creacion de usuario en la base de datos
+                            dataBase.child("Usuario").child(id).setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task2) {
+                                    if(task2.isSuccessful()){}
+                                    else {}
+                                }
+                            });
 
                             //Iniciar el perfil del usuario
                             Intent usuarioActivity = new Intent(LoginActivity.this, UsuarioActivity.class);
@@ -238,6 +264,25 @@ public class LoginActivity extends AppCompatActivity implements IUsuario.view {
 
                             // Guardar el proveedor "Google" en shared preferences
                             session.setProvider("Google");
+
+                            // Map
+                            FirebaseUser currentUser = mAuth.getCurrentUser();
+
+                            Map<String, Object> map = new HashMap<>();
+                            map.put("name", currentUser.getDisplayName());
+                            map.put("email", currentUser.getEmail());
+
+                            // variables de id
+                            String id = Objects.requireNonNull(currentUser).getUid();
+
+                            // creacion de usuario en la base de datos
+                            dataBase.child("Usuario").child(id).setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task2) {
+                                    if(task2.isSuccessful()){}
+                                    else {}
+                                }
+                            });
 
                             //Iniciar el perfil del usuario
                             Intent usuarioActivity = new Intent(LoginActivity.this, UsuarioActivity.class);
