@@ -153,10 +153,27 @@ public class LoginActivity extends AppCompatActivity implements IUsuario.view {
                             // Guardar el proveedor "Google" en shared preferences
                             session.setProvider("Facebook");
 
-                            //Iniciar el perfil del usuario
-                            Intent usuarioActivity = new Intent(LoginActivity.this, UsuarioActivity.class);
-                            startActivity(usuarioActivity);
-                            LoginActivity.this.finish();
+                            // Guardar el proveedor "Google" en shared preferences
+                            session.setProvider("Google");
+
+                            // Map
+                            FirebaseUser currentUser = mAuth.getCurrentUser();
+
+                            Map<String, Object> map = new HashMap<>();
+                            map.put("name", currentUser.getDisplayName());
+                            map.put("email", currentUser.getEmail());
+
+                            // variables de id
+                            String id = Objects.requireNonNull(currentUser).getUid();
+
+                            // creacion de usuario en la base de datos
+                            dataBase.child("Usuario").child(id).setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task2) {
+                                    if(task2.isSuccessful()){}
+                                    else {}
+                                }
+                            });
 
                         } else {
                             Toast.makeText(LoginActivity.this, "No se puede ingresar con esta cuenta.", Toast.LENGTH_SHORT).show();
