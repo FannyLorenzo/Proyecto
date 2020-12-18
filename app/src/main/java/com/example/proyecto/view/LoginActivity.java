@@ -153,9 +153,6 @@ public class LoginActivity extends AppCompatActivity implements IUsuario.view {
                             // Guardar el proveedor "Google" en shared preferences
                             session.setProvider("Facebook");
 
-                            // Guardar el proveedor "Google" en shared preferences
-                            session.setProvider("Google");
-
                             // Map
                             FirebaseUser currentUser = mAuth.getCurrentUser();
 
@@ -174,6 +171,11 @@ public class LoginActivity extends AppCompatActivity implements IUsuario.view {
                                     else {}
                                 }
                             });
+
+                            //Iniciar el perfil del usuario
+                            Intent usuarioActivity = new Intent(LoginActivity.this, UsuarioActivity.class);
+                            startActivity(usuarioActivity);
+                            LoginActivity.this.finish();
 
                         } else {
                             Toast.makeText(LoginActivity.this, "No se puede ingresar con esta cuenta.", Toast.LENGTH_SHORT).show();
