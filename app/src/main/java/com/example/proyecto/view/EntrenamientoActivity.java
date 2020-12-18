@@ -277,7 +277,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                                     @Override
                                     public void onClick(View view) {
                                         detener = true;
-                                        //registerRecordatorio();
+                                        registerRecordatorio();
                                         System.out.println("*********P/PARAR");
                                         actividadFragment.parar(false);
                                         isStop = true;
