@@ -44,6 +44,7 @@ public class Actividad_Fragment extends Fragment {
     Thread thread;
     int seg=0,minuts=0,hour=0;
     String seg2=":00",minuts2=":00",hour2="00";
+    String tiempo, distancia, velocidad, calorias;
     Handler h = new Handler();
     TextView segs,minutos,hours;
 
@@ -89,6 +90,7 @@ public class Actividad_Fragment extends Fragment {
             seg2 = getArguments().getString("segundo1", ":00");
             minuts2 = getArguments().getString("minuto1", ":00");
             hour2 = getArguments().getString("hora1", "00");
+            //tiempo = getArguments().getString()
         }
     }
 
@@ -104,35 +106,32 @@ public class Actividad_Fragment extends Fragment {
         hours.setText(hour2);
         segs.setText(seg2);
 
-        /*if (seg2 == 0 && seg != 0){
 
-            if (seg < 10){
-                segs.setText(":0"+String.valueOf(seg));
-            }else{
-                segs.setText(":"+seg);
-            }
-        }else{
-            seg = seg2;
-            if (seg < 10){
-                segs.setText(":0"+String.valueOf(seg));
-            }else{
-                segs.setText(":"+seg);
+        imageView = (ImageView) view.findViewById(R.id.play_pause);
+        if (isOn){
+            imageView.setImageDrawable(getResources().getDrawable(R.drawable.avd_play_to_pause));
+            Drawable drawable = imageView.getDrawable();
+
+            if (drawable instanceof AnimatedVectorDrawableCompat){
+                avd = (AnimatedVectorDrawableCompat) drawable;
+                avd.start();
+            }else if (drawable instanceof AnimatedVectorDrawable){
+                avd2 = (AnimatedVectorDrawable) drawable;
+                avd2.start();
             }
         }
-        minutos.setText(":0"+minuts2);*/
 
         playPause();
-        //cronometro();
 
         stopView = (ImageView) view.findViewById(R.id.stop);
         stopView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!isStop) {
-
+                    System.out.println("*********P/PARAR2");
                     isStop = true;
                     isOn = false;
-                    guardarDatos();
+                    //guardarDatos();
                 }
 
             }
@@ -245,5 +244,18 @@ public class Actividad_Fragment extends Fragment {
 
     public View getView(){
         return view;
+    }
+
+    public void setTiempo(String tiempo){
+        this.tiempo = tiempo;
+    }
+    public void setDistancia(String distancia){
+        this.distancia = distancia;
+    }
+    public void setVelocidad(String velocidad){
+        this.velocidad = velocidad;
+    }
+    public void setCalorias(String calorias){
+        this.calorias = calorias;
     }
 }

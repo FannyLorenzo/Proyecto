@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,12 +13,15 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimatedVectorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,9 +35,20 @@ import com.example.proyecto.view.fragements.Estadisticas_Fragment;
 import com.example.proyecto.view.fragements.Mapa_Fragment;
 import com.example.proyecto.view.fragements.Ubicacion_Fragment;
 import com.google.android.gms.common.util.concurrent.HandlerExecutor;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -41,7 +56,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
-public class EntrenamientoActivity extends AppCompatActivity implements IEntrenamiento.view{
+import static android.widget.Toast.LENGTH_SHORT;
+
+public class EntrenamientoActivity extends AppCompatActivity implements IEntrenamiento.view, NumberPicker.OnValueChangeListener{
 
     private  static final int REQUEST_CODE_LOCATION_PERMISSION=1;
     private static final int EARTH_RADIUS = 6371;
@@ -61,7 +78,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
     double control = 0;
     boolean siempre = true,isOn = false, isStop = false;
     Thread thread;
-    int seg=0,minuts=0,hour=0;
+    int seg=0,minuts=0,hour=0,milis=0;
     int seg2,minuts2,hour2;
     Handler h = new Handler();
     TextView segs,minutos,hours,estadist_minuts;
@@ -77,6 +94,16 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
 
     ArrayList<Ubicacion> recorrido = new ArrayList<>();
 
+    Double caloriasTotal = 0.0;
+
+    static Dialog d ;
+    private TextView tv;
+    int peso;
+    TextView cals,dist;
+
+    Context mContext=this;
+    FirebaseAuth usuario;
+    DatabaseReference dataBase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +114,10 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
         actividad = (Button)findViewById(R.id.actividad_fragmentButton);
         mapa = (Button)findViewById(R.id.mapa_fragmentButton);
         estadisticas = (Button)findViewById(R.id.estadisticas_fragmentButton);
+
+        //
+        usuario = FirebaseAuth.getInstance();
+        dataBase = FirebaseDatabase.getInstance().getReference();
 
         // Inicialización de fragments
         actividadFragment = new Actividad_Fragment();
@@ -99,14 +130,12 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
         Intent serviceIntent = new Intent(this,LocationService.class);
         bindService(serviceIntent, MConnection, Context.BIND_AUTO_CREATE);
 
-
         //cronometro
         cronometro();
         getSupportFragmentManager().beginTransaction().add(R.id.activity_fragment,actividadFragment).commit();
         getSupportFragmentManager().beginTransaction().add(R.id.activity_fragment,estadisticasFragment);
 
-
-
+        peso();
     }
 
     // Cambios entre los fragments
@@ -136,9 +165,9 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
             case R.id.estadisticas_fragmentButton:
                 nrofragment=2;
                 Bundle bundle = new Bundle();
-                bundle.putInt("segundo1",actividadFragment.getSeg());
+                bundle.putDouble("cals",caloriasTotal);
                 bundle.putInt("minuto1",minuts);
-                bundle.putInt("hora1",actividadFragment.getHour());
+                bundle.putDouble("dist",distanciaTotal);
                 estadisticasFragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.activity_fragment,estadisticasFragment);
                 //actividadFragment.parar(false); /// aqui algo
@@ -192,7 +221,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
 
                         if(seg%5==0){ // para crear el arreglo de ubicaciones
                             recorrido.add(new Ubicacion(latitud,longitud));
-                            System.out.println("********************"+distancia());
+                            calorias();
                         }
                         h.post(new Runnable() {
                             @Override
@@ -216,11 +245,59 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
 
                                 System.out.println(s);
                                 segs = (TextView) actividadFragment.getView().findViewById(R.id.seg_TextView);
-                                segs.setText(s);
+
                                 minutos = (TextView) actividadFragment.getView().findViewById(R.id.minut_TextView);
                                 hours = (TextView) actividadFragment.getView().findViewById(R.id.hour_TextView);
-                                minutos.setText(m);
-                                hours.setText(ho);
+                                stopView = (ImageView) actividadFragment.getView().findViewById(R.id.stop);
+                                stopView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        registerRecordatorio();
+                                        System.out.println("*********P/PARAR");
+                                        actividadFragment.parar(false);
+                                        isStop = true;
+                                        seg=0;minuts=0;hour=0;
+                                        s = ":00";
+                                        m = ":00";
+                                        ho = "00";
+                                        distanciaTotal = 0.0;
+                                        caloriasTotal = 0.0;
+                                        segs = (TextView) actividadFragment.getView().findViewById(R.id.seg_TextView);
+                                        segs.setText(s);
+                                        minutos = (TextView) actividadFragment.getView().findViewById(R.id.minut_TextView);
+                                        hours = (TextView) actividadFragment.getView().findViewById(R.id.hour_TextView);
+
+                                        minutos.setText(m);
+                                        hours.setText(ho);
+                                        //isOn = false;
+
+                                        imageView = (ImageView) actividadFragment.getView().findViewById(R.id.play_pause);
+                                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.avd_pause_to_play));
+                                            Drawable drawable = imageView.getDrawable();
+
+                                            if (drawable instanceof AnimatedVectorDrawableCompat){
+                                                avd = (AnimatedVectorDrawableCompat) drawable;
+                                                avd.start();
+                                            }else if (drawable instanceof AnimatedVectorDrawable){
+                                                avd2 = (AnimatedVectorDrawable) drawable;
+                                                avd2.start();
+                                            }
+
+                                    }
+                                });
+                                isOn = actividadFragment.getBool();
+                                if (isOn){
+
+                                    segs.setText(s);
+                                    minutos.setText(m);
+                                    hours.setText(ho);
+                                }
+
+                                /*cals = (TextView)  estadisticasFragment.getView().findViewById(R.id.cal_est);
+                                dist = (TextView) estadisticasFragment.getView().findViewById(R.id.dist_est);
+                                cals.setText(""+caloriasTotal);
+                                dist.setText(""+distanciaTotal);*/
+
                                 // ubicacion - actualización de valores en fragment
                                 if(nrofragment==1) {
                                     System.out.println(" **** ENTROOOOOOOO");
@@ -229,7 +306,6 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                                     txt_latitud.setText(String.valueOf(latitud));
                                     txt_longitud.setText(String.valueOf(longitud));
                                 }
-
                             }
                         });
                     }else{//isOn es false / si está pausado etc, esto hay q ver
@@ -246,8 +322,10 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                                     segs.setText(s);
                                     minutos = (TextView) actividadFragment.getView().findViewById(R.id.minut_TextView);
                                     hours = (TextView) actividadFragment.getView().findViewById(R.id.hour_TextView);
+
                                     minutos.setText(m);
                                     hours.setText(ho);
+
                                 }});
                         }
 
@@ -366,9 +444,10 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
         double a = haversin(dLat) + Math.cos(startLat) * Math.cos(endLat) * haversin(dLong);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-        distanciaTotal = distanciaTotal+EARTH_RADIUS * c*(double)1000;
+        distanciaTotal = distanciaTotal+EARTH_RADIUS * c;
+        distanciaTotal = Math.round(distanciaTotal*100.0)/100.0;
         System.out.println("********************///"+distanciaTotal);
-        return EARTH_RADIUS * c*(double)1000; // <-- d
+        return EARTH_RADIUS * c; // <-- d
     }
 
     public static double haversin(double val) {
@@ -403,16 +482,22 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                 siempre = false;
                 unbindService(MConnection);
                 isBindLocation = false;
+                pararRecorrido();
                 finish();
-                pararRecorrido(); // agregado por FL
+                 // agregado por FL
             }
         });
     }
 
     public void calorias(){
+
         double dist = distancia();
+        dist = dist*(double) 1000;
         double MET = 0;
-        dist = dist*1000;
+
+        //dist = distanciaTotal*1000;
+        //dist = distanciaTotal/(double)(seg+minuts*60+hour*3600);
+        //double velocidad = dist/(double)(seg+minuts*60+hour*3600);
         double velocidad = dist/(double)5;
         velocidad = velocidad*(double)3600/(double)1000;
         if (velocidad >=0 && velocidad <= 1.5){
@@ -446,6 +531,81 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
         }else{
             MET = 16.5;
         }
+        double cal = MET*peso*0.0175;
+        cal = cal/(double)12;
+        cal = Math.round(cal*100.0)/100.0;
+        caloriasTotal = cal+caloriasTotal;
+        caloriasTotal = Math.round(caloriasTotal*100.0)/100.0;
+    }
+
+    public void peso(){
+        final Dialog d = new Dialog(EntrenamientoActivity.this);
+        d.setTitle("NumberPicker");
+        d.setContentView(R.layout.dialog);
+        Button b1 = (Button) d.findViewById(R.id.button1);
+        Button b2 = (Button) d.findViewById(R.id.button2);
+        final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
+        np.setMaxValue(150); // max value 100
+        np.setMinValue(0);   // min value 0
+        np.setWrapSelectorWheel(false);
+        np.setOnValueChangedListener(this);
+        b1.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                //tv.setText(String.valueOf(np.getValue())); //set the value to textview
+                peso = np.getValue();
+                System.out.println("**************/"+peso);
+                d.dismiss();
+            }
+        });
+        b2.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                d.dismiss(); // dismiss the dialog
+            }
+        });
+        d.show();
+    }
+
+    @Override
+    public void onValueChange(NumberPicker numberPicker, int i, int i1) {
+        Log.i("value is",""+i1);
+    }
+
+    private void registerRecordatorio() {
+        String date = new SimpleDateFormat("dd-MMM-yyyy").format(new Date());
+        double velocidad = distanciaTotal/(double)(seg+minuts*60+hour*3600);
+        velocidad = velocidad*(double)3600/(double)1000;
+        velocidad = Math.round(velocidad*100.0)/100.0;
+        String id = "VQf0aFsW0ib8TMD7qGPnbEE7oII2";//Objects.requireNonNull(usuario.getCurrentUser()).getUid();
+        System.out.println(" cual es el id "+ id);
+        //map
+        Map<String, Object> map = new HashMap<>();
+        map.put("fecha", date);
+        map.put("tiempo", ""+(seg+minuts*60+hour*3600));
+        map.put("distancia", distanciaTotal);
+        map.put("velocidad", velocidad);
+        map.put("calorias", caloriasTotal);
+        map.put("ubicacion",recorrido);
+        //map.put("estado_registro", EstRegistro);
+
+        // creacion de usuario en la base de datos
+        dataBase.child("Usuario").child(id).child("Entrenamiento").push().setValue(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(EntrenamientoActivity.this, "El recordatorio se ha creado correctamente", LENGTH_SHORT).show();
+                //startActivity(new Intent(RecordatorioActivity.this, AllRecordatorioActivity.class));
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(EntrenamientoActivity.this, "Hubo un error al tratar de guardar los datos", LENGTH_SHORT).show();
+
+            }
+        });
+
 
     }
 }

@@ -23,6 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Proyecto">
         <activity android:name=".view.PlayerActivity"></activity>
+        <activity android:name=".view.EntrenamientoHistorial"/>
         <activity android:name=".view.UsuarioActivity" />
         <activity android:name=".view.RegistroActivity" />
         <activity android:name=".view.LoginActivity" />
