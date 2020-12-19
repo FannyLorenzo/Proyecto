@@ -1,6 +1,7 @@
 package com.example.proyecto.interfaces;
 
 import com.example.proyecto.model.Usuario;
+import com.facebook.AccessToken;
 
 public interface IUsuario {
     interface view {
@@ -13,7 +14,8 @@ public interface IUsuario {
         void showRegisterSuccess(String result, Usuario usuario);
         void showRegisterError(String result);
         void loginUser(String email, String password);
-        void loginUserWithGoogle();
+        void handleFacebookAccessToken(AccessToken token);
+        void firebaseAuthWithGoogle(String idToken);
         void getUserAuth();
         void signOutUser();
     }
@@ -21,7 +23,8 @@ public interface IUsuario {
     interface model {
         void registerUser(Usuario usuario);
         void loginUser(String email, String password);
-        void loginUserWithGoogle();
+        void handleFacebookAccessToken(AccessToken token);
+        void firebaseAuthWithGoogle(String idToken);
         void getUserAuth();
         void signOutUser();
     }

@@ -2,6 +2,7 @@ package com.example.proyecto.presenter;
 import com.example.proyecto.interfaces.IUsuario;
 import com.example.proyecto.model.Usuario;
 import com.example.proyecto.model.UsuarioModel;
+import com.facebook.AccessToken;
 
 public class UsuarioPresentador implements IUsuario.presenter {
     private IUsuario.view view;
@@ -30,8 +31,13 @@ public class UsuarioPresentador implements IUsuario.presenter {
     }
 
     @Override
-    public void loginUserWithGoogle() {
-        model.loginUserWithGoogle();
+    public void handleFacebookAccessToken(AccessToken token) {
+        model.handleFacebookAccessToken(token);
+    }
+
+    @Override
+    public void firebaseAuthWithGoogle(String idToken) {
+        model.firebaseAuthWithGoogle(idToken);
     }
 
     @Override

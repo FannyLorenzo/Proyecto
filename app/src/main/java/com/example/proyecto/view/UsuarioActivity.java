@@ -80,7 +80,7 @@ public class UsuarioActivity extends AppCompatActivity implements IUsuario.view 
         imgbtn_atras.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(UsuarioActivity.this, MenuPrincipal.class)); // PONER ACTIVITY DE DONDE VINO
+                startActivity(new Intent(UsuarioActivity.this, MenuPrincipal.class));
             }
         });
 

@@ -1,10 +1,12 @@
 package com.example.proyecto.model;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -16,9 +18,27 @@ import com.example.proyecto.R;
 import com.example.proyecto.interfaces.IUsuario;
 import com.example.proyecto.persistence.SessionManager;
 import com.example.proyecto.persistence.DatabaseOpenHelper;
+import com.example.proyecto.view.LoginActivity;
+import com.example.proyecto.view.UsuarioActivity;
+import com.facebook.AccessToken;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class UsuarioModel implements IUsuario.model {
 
@@ -28,11 +48,22 @@ public class UsuarioModel implements IUsuario.model {
     private SessionManager session;
     private Context _context;
 
+    // Constante
+    String TAG = "GoogleSignIn";
+
+    // Variable para gestionar FirebaseAuth
+    private FirebaseAuth mAuth;
+    private DatabaseReference dataBase;
+
     public UsuarioModel (IUsuario.presenter presenter, IUsuario.view view) {
         this.presenter = presenter;
         this._context = (Context) view;
         database = new DatabaseOpenHelper(this._context).getWritableDatabase();
         session = new SessionManager(this._context); // Para el share preferences
+
+        // Inicializar Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+        dataBase = FirebaseDatabase.getInstance().getReference();
     }
 
     private ArrayList<Usuario> getUsuarios () {
@@ -67,11 +98,11 @@ public class UsuarioModel implements IUsuario.model {
         ArrayList<Usuario> lista = getUsuarios();
 
         for (Usuario u : lista) {
-            if (u.getEmail() == usuario.getEmail()) {
+            if (u.getEmail().equals(usuario.getEmail())) {
                 presenter.showRegisterError("El email ya existe.");
                 return;
             }
-            if (u.getContraseña() == usuario.getContraseña()) {
+            if (u.getContraseña().equals(usuario.getContraseña())) {
                 presenter.showRegisterError("La contraseña ya existe.");
                 return;
             }
@@ -85,6 +116,7 @@ public class UsuarioModel implements IUsuario.model {
         contentValues.put("genero", usuario.getGenero());
 
         long returnValue = database.insert("usuario", null, contentValues);
+        this.registerWithUserPassword(usuario);
 
         if (returnValue == -1) {
             presenter.showRegisterError("Error en el registro");
@@ -118,11 +150,6 @@ public class UsuarioModel implements IUsuario.model {
     }
 
     @Override
-    public void loginUserWithGoogle() {
-
-    }
-
-    @Override
     public void getUserAuth() {
         ArrayList<Usuario> lista = getUsuarios();
         HashMap<String, String> user = session.getUserPref();
@@ -134,6 +161,134 @@ public class UsuarioModel implements IUsuario.model {
             }
         }
         presenter.showRegisterError("Error al cargar el usuario.");
+    }
+
+    @Override
+    public void handleFacebookAccessToken(AccessToken token) {
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener((Activity) this._context, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        // validación
+                        if (task.isSuccessful()) {
+
+                            // Guardar el proveedor "Google" en shared preferences
+                            session.setProvider("Facebook");
+
+                            // Map
+                            FirebaseUser currentUser = mAuth.getCurrentUser();
+
+                            Map<String, Object> map = new HashMap<>();
+                            map.put("name", currentUser.getDisplayName());
+                            map.put("email", currentUser.getEmail());
+
+                            // variables de id
+                            String id = Objects.requireNonNull(currentUser).getUid();
+
+                            // creacion de usuario en la base de datos
+                            dataBase.child("Usuario").child(id).setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task2) {
+                                    if(task2.isSuccessful()){}
+                                    else {}
+                                }
+                            });
+
+                            Usuario usuario = new Usuario();
+                            usuario.setNombre(currentUser.getDisplayName());
+                            usuario.setEmail(currentUser.getEmail());
+
+                            presenter.showRegisterSuccess("Ingresó correctamente con Facebook.", usuario);
+                        } else {
+                            presenter.showRegisterError("No se puede ingresar con esta cuenta.");
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void firebaseAuthWithGoogle(String idToken) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener((Activity) this._context, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in exitoso
+                            Log.d(TAG, "signInWithCredential:success");
+
+                            // Guardar el proveedor "Google" en shared preferences
+                            session.setProvider("Google");
+
+                            // Registrar en la base de datos de Firebase
+                            FirebaseUser currentUser = mAuth.getCurrentUser();
+
+                            Map<String, Object> map = new HashMap<>();
+                            map.put("name", currentUser.getDisplayName());
+                            map.put("email", currentUser.getEmail());
+
+                            // variables de id
+                            String id = Objects.requireNonNull(currentUser).getUid();
+
+                            // creacion de usuario en la base de datos
+                            dataBase.child("Usuario").child(id).setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task2) {
+                                    if(task2.isSuccessful()){}
+                                    else {}
+                                }
+                            });
+
+                            Usuario usuario = new Usuario();
+                            usuario.setNombre(currentUser.getDisplayName());
+                            usuario.setEmail(currentUser.getEmail());
+
+                            presenter.showRegisterSuccess("Ingresó correctamente con Google.", usuario);
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                        }
+                    }
+                });
+    }
+
+    public void registerUserFirebase(FirebaseUser user){
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", user.getDisplayName());
+        map.put("email", user.getEmail());
+
+        // variables de id
+        String id = Objects.requireNonNull(user).getUid();
+
+        // creacion de usuario en la base de datos
+        dataBase.child("Usuario").child(id).setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task2) {
+                if(task2.isSuccessful()){}
+                else {}
+            }
+        });
+    }
+
+    public void registerWithUserPassword(Usuario user) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", user.getNombre());
+        map.put("email", user.getEmail());
+
+        Log.w(TAG, "asd "+mAuth.getCurrentUser());
+        // variables de id
+        String key = dataBase.push().getKey();
+
+        // Creacion de usuario en la base de datos
+        dataBase.child("Usuario").child(key).setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task2) {
+                if(task2.isSuccessful()){}
+                else{}
+            }
+        });
     }
 
     @Override
