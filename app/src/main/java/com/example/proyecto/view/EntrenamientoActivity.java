@@ -38,6 +38,7 @@ import com.example.proyecto.view.fragements.Mapa_Fragment;
 import com.example.proyecto.view.fragements.Ubicacion_Fragment;
 import com.google.android.gms.common.util.concurrent.HandlerExecutor;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -339,6 +340,8 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                                     txt_longitud = (TextView) ubicacionfragment.getView().findViewById(R.id.txt_longitud);
                                     txt_latitud.setText(String.valueOf(latitud));
                                     txt_longitud.setText(String.valueOf(longitud));
+                                    if(latitud!=0 && longitud!=00)
+                                    mapaFragment.getPoints().add(new LatLng(latitud,longitud));
                                 }
 
                                 if(nrofragment==2) {

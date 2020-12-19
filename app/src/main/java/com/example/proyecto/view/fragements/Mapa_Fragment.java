@@ -1,5 +1,6 @@
 package com.example.proyecto.view.fragements;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +13,19 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
-public class Mapa_Fragment extends SupportMapFragment implements OnMapReadyCallback {
+import java.util.ArrayList;
+
+public class Mapa_Fragment extends SupportMapFragment implements OnMapReadyCallback, GoogleMap.OnPolylineClickListener, GoogleMap.OnPolygonClickListener{
+
 
     double lat, lon;
     View rootView;
+    Polyline polyline1;
+    ArrayList<LatLng> points = new ArrayList<LatLng>();
     public Mapa_Fragment() { }
 
 
@@ -33,27 +42,50 @@ public class Mapa_Fragment extends SupportMapFragment implements OnMapReadyCallb
 
         return rootView;
     }
+public void onMapReady(GoogleMap googleMap) {
+        // Add a polyline to the map.
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
         LatLng latLng = new LatLng(lat, lon);
-
         float zoom = 17;
 
+    polyline1 = googleMap.addPolyline((new PolylineOptions())
+            .clickable(true)
+            .addAll(points)
+            .add(latLng)
+            .width(2)
+            .color(Color.BLUE)
+    );
+
+        System.out.println(" aqui waaa "+ lat + " parejita "+lon);
+
+        // Set listeners for click events.
+        googleMap.setOnPolylineClickListener(this);
+        googleMap.setOnPolygonClickListener(this);
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
-
         googleMap.getUiSettings().setZoomControlsEnabled(true);
-
         googleMap.addMarker(new MarkerOptions().position(latLng));
 
-        UiSettings settings = googleMap.getUiSettings();
 
-        settings.setZoomControlsEnabled(true);
-    }
-
+}
 
     public View getView(){
         return rootView;
     }
+
+        @Override
+        public void onPolygonClick(Polygon polygon) {
+
+        }
+
+        @Override
+        public void onPolylineClick(Polyline polyline) {
+
+        }
+
+
+        public ArrayList<LatLng> getPoints() {
+            return points;
+        }
 }
 
