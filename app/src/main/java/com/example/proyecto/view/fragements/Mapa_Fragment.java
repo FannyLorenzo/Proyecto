@@ -25,7 +25,7 @@ public class Mapa_Fragment extends SupportMapFragment implements OnMapReadyCallb
     double lat, lon;
     View rootView;
     Polyline polyline1;
-    ArrayList<LatLng> points = new ArrayList<LatLng>();
+    public static ArrayList<LatLng> points = new ArrayList<LatLng>();
     public Mapa_Fragment() { }
 
 
@@ -37,7 +37,6 @@ public class Mapa_Fragment extends SupportMapFragment implements OnMapReadyCallb
             this.lat = getArguments().getDouble("lat");
             this.lon = getArguments().getDouble("lon");
         }
-
         getMapAsync(this);
 
         return rootView;
@@ -51,12 +50,9 @@ public void onMapReady(GoogleMap googleMap) {
     polyline1 = googleMap.addPolyline((new PolylineOptions())
             .clickable(true)
             .addAll(points)
-            .add(latLng)
             .width(2)
             .color(Color.BLUE)
     );
-
-        System.out.println(" aqui waaa "+ lat + " parejita "+lon);
 
         // Set listeners for click events.
         googleMap.setOnPolylineClickListener(this);
@@ -86,6 +82,18 @@ public void onMapReady(GoogleMap googleMap) {
 
         public ArrayList<LatLng> getPoints() {
             return points;
+        }
+
+
+    public void setPoints(ArrayList<LatLng> puntos) {
+        points = new ArrayList<LatLng>();
+        points.addAll(puntos);
+        //Mapa_Fragment.points = points;
+    }
+
+    public void actualizarPuntos(double latitud, double longitud){
+        points.add(new LatLng(latitud,longitud));
+
         }
 }
 

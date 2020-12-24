@@ -1,5 +1,6 @@
 package com.example.proyecto.view;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -19,146 +20,164 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.proyecto.R;
 import com.example.proyecto.interfaces.IUbicacion;
+import com.example.proyecto.model.Recorrido;
 import com.example.proyecto.model.Ubicacion;
 import com.example.proyecto.presenter.PermisosPresenter;
 import com.example.proyecto.presenter.UbicacionPresenter;
 import com.example.proyecto.presenter.UsuarioPresentador;
+import com.example.proyecto.view.adapter.RecorridoAdapter;
 import com.example.proyecto.view.fragements.Mapa_Fragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-public class UbicacionActivity extends AppCompatActivity implements IUbicacion.view {
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Map;
+import java.util.Objects;
+
+public class UbicacionActivity extends AppCompatActivity {
     private static final int REQUEST_PERMISSION_UBICACION = 111;
     private Button btn_GPS;
-    private TextView txt_latitud;
-    private TextView txt_longitud;
-    private TextView txt_direccion;
-    private UbicacionPresenter presenter;
     double lat, lon;
     int wa = 0;
-    private FusedLocationProviderClient fusedLocationClient;
+    private ListView lvItems;
+    private RecorridoAdapter adaptador;
+    private ArrayList<Recorrido> arrayEntidad = new ArrayList<>();
+    FirebaseAuth usuario;
+    DatabaseReference dataBase;
+    Mapa_Fragment fragment;
+    ArrayList<LatLng> ubi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ubicacion);
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        usuario = FirebaseAuth.getInstance();
+        dataBase = FirebaseDatabase.getInstance().getReference();
+        fragment = new Mapa_Fragment();
 
         btn_GPS = findViewById(R.id.btn_UbicacionActual);
-        txt_latitud = findViewById(R.id.txt_latitud);
-        txt_longitud = findViewById(R.id.txt_longitud);
-        txt_direccion = findViewById(R.id.txt_direccion);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-        }
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location != null) {
-                            lat = location.getLatitude();
-                            lon = location.getLongitude();
-                            System.out.println(" ****** " + lat + " - " + lon + " waaaa* " +wa);
-                            wa++;
-                            System.out.println(" ****** " +" waaaa* " +wa);
-                            txt_latitud.setText(lat + " ok ");
-                            txt_longitud.setText(lon + " ok ");
-                        }
-                    }
-                });
-        presenter = new UbicacionPresenter(this); /// AQUIIIIIII
+        lvItems = (ListView) findViewById(R.id.lvItems);
+        getDataBase(this);
+
+        //llenarItems();
+
         btn_GPS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                presenter.solicitarPermisosUbicacion(); /// mmm
-
-                LocationManager locationManager = (LocationManager) UbicacionActivity.this.getSystemService(Context.LOCATION_SERVICE);
-
-                LocationListener locationListener = new LocationListener() {
-                    @SuppressLint("SetTextI18n") // weno
-                    public void onLocationChanged(Location location) {
-                        txt_latitud.setText("" + location.getLatitude());
-                        txt_longitud.setText("" + location.getLongitude());
-                        txt_direccion.setText("speed: " + location.getSpeed() + "time: " + "/n" +
-                                location.getTime() + "realtime: " + "/n" +
-                                location.getElapsedRealtimeNanos());
-
-                        mapa(location.getLatitude(), location.getLongitude());
-                        // Aqui guardar objeto UbicacionModel con SQLite
-                        Log.d("LOCATION_UPDATE", location.getLatitude() + ", " + location.getLongitude());
-
-
-
-                    }
-
-                    @Override
-                    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                    }
-
-                    @Override
-                    public void onProviderEnabled(String provider) {
-
-                    }
-
-                    @Override
-                    public void onProviderDisabled(String provider) {
-
-                    }
-                };
-
-                presenter.solicitarPermisosUbicacion();
-                int permissionCheck = ContextCompat.checkSelfPermission(UbicacionActivity.this, Manifest.permission.ACCESS_FINE_LOCATION);
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+               mapa(-16.462950012454, -71.51263554552334);
        }
         });
 
-        int permissionCheck = ContextCompat.checkSelfPermission(UbicacionActivity.this, Manifest.permission.ACCESS_FINE_LOCATION);
 
-
-    }
-
-
-
-
-    @Override
-    public void showRegisterError(String error_en_el_registro) {
-
-    }
-
-    @Override
-    public void showRegisterSuccess(String s, Ubicacion item) {
-
-    }
-
-
-    @Override
-    public void showRequiredUbicacion() {
-        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSION_UBICACION);
-        System.out.println("Se ejecutó showResultSuccessUbicacion ***");
     }
 
     public void mapa(double lat, double lon) {
         // Fragment del Mapa
-        Mapa_Fragment fragment = new Mapa_Fragment();
+       // double [] otro = new double[30];
+
 
         Bundle bundle = new Bundle();
         bundle.putDouble("lat", lat);
         bundle.putDouble("lon", lon);
+       // bundle.putDoubleArray("latitutes", otro);
         fragment.setArguments(bundle);
+        ubi = new ArrayList<LatLng>();
+
+        for(Ubicacion u: arrayEntidad.get(0).getRecorrido()){
+            ubi.add(new LatLng(u.getLatitud(), u.getLongitud()));
+        }
+         //   ubi.
+        //}
+        //fragment.setPoints(ubi);
+        //System.out.println(" mapaaa " + ubi.get(0).toString());
+        //System.out.println(" mapaaa2 " + ubi.get(1).toString());
+        fragment.setPoints(ubi);
 
         FragmentManager fragmentManager = this.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.map, fragment, null);
         fragmentTransaction.commit();
     }
+
+    private void llenarItems(){
+        arrayEntidad.add(new Recorrido("00/00/0000", "00.00", new ArrayList<Ubicacion>()));
+        arrayEntidad.add(new Recorrido("00/00/0000", "00.00", new ArrayList<Ubicacion>()));
+        arrayEntidad.add(new Recorrido("00/00/0000", "00.00", new ArrayList<Ubicacion>()));
+        arrayEntidad.add(new Recorrido("00/00/0000", "00.00", new ArrayList<Ubicacion>()));
+        adaptador = new RecorridoAdapter(this, arrayEntidad);
+        lvItems.setAdapter(adaptador);
+    }
+    private void getDataBase(Context context){
+        arrayEntidad = new ArrayList<>();
+        ArrayList<Ubicacion> ubicaciones = new ArrayList<Ubicacion>();
+        String id = Objects.requireNonNull(usuario.getCurrentUser()).getUid(); // "VQf0aFsW0ib8TMD7qGPnbEE7oII2";//
+        dataBase.child("Usuario").child(id).child("Entrenamiento").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    for(DataSnapshot ds: snapshot.getChildren()){
+                        String fecha = ds.child("fecha").getValue().toString();
+                        String tiempo = ds.child("tiempo").getValue().toString();
+                        String id2 = ds.getKey();
+                       dataBase.child("Usuario").child(id).child("Entrenamiento").child(id2).child("ubicacion").addValueEventListener(new ValueEventListener() {
+                           @Override
+                           public void onDataChange(@NonNull DataSnapshot snapshot) {
+                               if(snapshot.exists()){
+                                   for(DataSnapshot ds: snapshot.getChildren()) {
+                                       double latitud = (double) ds.child("latitud").getValue();
+                                       double longitud = (double) ds.child("longitud").getValue();
+                                       String id = ds.getKey().toString();
+                                       int i=0;
+                                       //int na = (int) id;
+                                       ubicaciones.add(new Ubicacion(latitud,longitud));
+                                       //agrego a array
+                                   }
+                                   //adapter
+                               }
+                           }
+
+                           @Override
+                           public void onCancelled(@NonNull DatabaseError error) {
+
+                           }
+                       });
+
+
+                      //  System.out.println((new Cargo(code,name,status)).toString());
+                        arrayEntidad.add(new Recorrido(fecha,tiempo, ubicaciones));
+                    }
+                    //adapterPosition = new AdapterPosition(cargoList, getContext());
+                    //recyclerView.setAdapter(adapterPosition);
+                    adaptador = new RecorridoAdapter(context, arrayEntidad);
+                    lvItems.setAdapter(adaptador);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+
 
 
 

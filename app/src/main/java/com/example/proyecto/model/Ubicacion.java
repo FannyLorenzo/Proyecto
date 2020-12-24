@@ -5,6 +5,7 @@ import android.nfc.FormatException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Ubicacion {
@@ -19,6 +20,12 @@ public class Ubicacion {
     private DateFormat hora = new SimpleDateFormat("HH:mm:ss");
 
     public Ubicacion(){}
+    public Ubicacion(ArrayList<Ubicacion> ubicaciones){
+        for (Ubicacion u: ubicaciones){
+
+
+        }
+    }
     public Ubicacion(double latitud, double longitud) {
         this.latitud = latitud;
         this.longitud = longitud;

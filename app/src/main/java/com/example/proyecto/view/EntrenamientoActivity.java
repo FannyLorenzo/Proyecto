@@ -38,6 +38,8 @@ import com.example.proyecto.view.fragements.Mapa_Fragment;
 import com.example.proyecto.view.fragements.Ubicacion_Fragment;
 import com.google.android.gms.common.util.concurrent.HandlerExecutor;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.internal.IGoogleMapDelegate;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -273,12 +275,16 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
 
                                 minutos = (TextView) actividadFragment.getView().findViewById(R.id.minut_TextView);
                                 hours = (TextView) actividadFragment.getView().findViewById(R.id.hour_TextView);
+
+
                                 stopView = (ImageView) actividadFragment.getView().findViewById(R.id.stop);
                                 stopView.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
                                         detener = true;
                                         registerRecordatorio();
+                                           mapaFragment.getMapAsync(mapaFragment); // aquii
+
                                         System.out.println("*********P/PARAR");
                                         actividadFragment.parar(false);
                                         isStop = true;
@@ -340,8 +346,9 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
                                     txt_longitud = (TextView) ubicacionfragment.getView().findViewById(R.id.txt_longitud);
                                     txt_latitud.setText(String.valueOf(latitud));
                                     txt_longitud.setText(String.valueOf(longitud));
-                                    if(latitud!=0 && longitud!=00)
-                                    mapaFragment.getPoints().add(new LatLng(latitud,longitud));
+                                  if(latitud!=0 && longitud!=00)
+                                    mapaFragment.actualizarPuntos(latitud,longitud);
+                                    mapaFragment.getMapAsync(mapaFragment);
                                 }
 
                                 if(nrofragment==2) {
@@ -646,7 +653,7 @@ public class EntrenamientoActivity extends AppCompatActivity implements IEntrena
         double velocidad = distanciaTotal/(double)(seg+minuts*60+hour*3600);
         velocidad = velocidad*(double)3600/(double)1000;
         velocidad = Math.round(velocidad*100.0)/100.0;
-        String id = "VQf0aFsW0ib8TMD7qGPnbEE7oII2";//Objects.requireNonNull(usuario.getCurrentUser()).getUid();
+        String id = Objects.requireNonNull(usuario.getCurrentUser()).getUid(); // "VQf0aFsW0ib8TMD7qGPnbEE7oII2";//
         System.out.println(" cual es el id "+ id);
         //map
         Map<String, Object> map = new HashMap<>();

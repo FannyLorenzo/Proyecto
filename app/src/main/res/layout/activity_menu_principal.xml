@@ -164,9 +164,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="164dp"
-        android:layout_marginBottom="197dp"
-        android:text="@string/ubicaci_n_actual"
+        android:layout_marginEnd="231dp"
+        android:layout_marginBottom="191dp"
+        android:text="Recorridos"
         android:textColor="@color/white"
         android:textSize="26sp"
         android:textStyle="bold" />
